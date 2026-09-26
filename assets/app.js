@@ -805,7 +805,14 @@ function buildMonthForm() {
   let lastGroup = null;
   for (const a of state.data.assets) {
     if (a.archived && !src?.values[a.id]) continue;
-    if (a.group && a.group !== lastGroup) body.append(h("tr", { class: "group-row" }, h("td", { colspan: "3" }, h("div", { class: "asset-name" }, h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.group))));
+    if (a.group && a.group !== lastGroup)
+      body.append(
+        h(
+          "tr",
+          { class: "group-row", "data-group": a.group },
+          h("td", { colspan: "3" }, h("div", { class: "asset-name" }, h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.group, h("span", { class: "grp-added" }))),
+        ),
+      );
     lastGroup = a.group || null;
     const prevVal = prev?.values[a.id];
     const value = src ? src.values[a.id] : prevVal;
@@ -813,6 +820,7 @@ function buildMonthForm() {
     if (a.costTracked) {
       const prevInv = prev?.invested[a.id] ?? 0;
       if (src) added = src.invested[a.id] != null ? src.invested[a.id] - prevInv : null;
+      else if (a.dca != null) added = a.dca; // default monthly amount (Settings → Assets)
       else if (prev?.invested[a.id] != null) added = prev.invested[a.id] - (prev2?.invested[a.id] ?? 0);
     }
     const valInput = h("input", { type: "text", inputmode: "decimal", name: `v_${a.id}`, value: money2(value), placeholder: "0", "aria-label": `${a.name} market value`, oninput: updateMonthTotal });
@@ -831,7 +839,7 @@ function buildMonthForm() {
         {},
         h("td", { class: a.group ? "child" : "" }, h("div", { class: "asset-name" }, a.group ? null : h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.name)),
         h("td", { "data-label": "Market value" }, valInput, hint),
-        h("td", { "data-label": "Added this month" }, a.costTracked ? h("input", { type: "text", inputmode: "decimal", name: `c_${a.id}`, value: money2(added), placeholder: "0", "aria-label": `${a.name} added this month` }) : h("div", { class: "hint" }, "no cost basis")),
+        h("td", { "data-label": "Added this month" }, a.costTracked ? h("input", { type: "text", inputmode: "decimal", name: `c_${a.id}`, value: money2(added), placeholder: "0", "aria-label": `${a.name} added this month`, oninput: updateMonthTotal }) : h("div", { class: "hint" }, "no cost basis")),
       ),
     );
   }
@@ -854,6 +862,17 @@ function updateMonthTotal() {
     const v = parseAmount(i.value);
     if (Number.isNaN(v)) bad = true;
     else t += v || 0;
+  });
+  // Per account: money added = funds bought + change in the account's cash (no-cost holdings).
+  $$("#mf-assets tr.group-row").forEach((row) => {
+    let add = 0;
+    for (const a of state.data.assets.filter((x) => x.group === row.dataset.group)) {
+      const ci = $(`#mf-assets input[name="c_${a.id}"]`);
+      const vi = $(`#mf-assets input[name="v_${a.id}"]`);
+      if (ci) add += parseAmount(ci.value) || 0;
+      else if (vi && !a.costTracked) add += (parseAmount(vi.value) || 0) - (prev?.values[a.id] ?? 0);
+    }
+    row.querySelector(".grp-added").textContent = `Added this month ${signed(add)}`;
   });
   const pt = prev ? total(prev) : null;
   $("#mf-total").replaceChildren(
@@ -1147,6 +1166,23 @@ function renderAssetList() {
         h("input", { value: a.name, "aria-label": "Asset name", onchange: (e) => ((a.name = e.target.value.trim() || a.name), changed()) }),
         h("input", { class: "mv", value: a.group || "", placeholder: "Account", title: "Account (groups holdings, e.g. IBKR)", "aria-label": `${a.name} account`, onchange: (e) => ((a.group = e.target.value.trim() || undefined), changed()) }),
         h("label", { title: "Track purchase cost for gain/loss" }, h("input", { type: "checkbox", checked: a.costTracked, onchange: (e) => ((a.costTracked = e.target.checked), changed()) }), "cost"),
+        h("input", {
+          class: "mv dca",
+          type: "text",
+          inputmode: "decimal",
+          value: a.dca != null ? String(a.dca) : "",
+          placeholder: a.costTracked ? "DCA /mo" : "",
+          disabled: !a.costTracked,
+          title: "Default 'Added this month' for new months",
+          "aria-label": `${a.name} default monthly amount`,
+          onchange: (e) => {
+            const v = parseAmount(e.target.value);
+            if (Number.isNaN(v)) return toast("Not a number");
+            if (v == null) delete a.dca;
+            else a.dca = v;
+            changed();
+          },
+        }),
         h("label", { class: "mv", title: "Hide from the Add month form" }, h("input", { type: "checkbox", checked: !!a.archived, onchange: (e) => ((a.archived = e.target.checked), changed()) }), "hide"),
         h("button", { class: "btn mv", type: "button", "aria-label": `Move ${a.name} up`, onclick: () => move(i, -1) }, "↑"),
         inUse(a.id)

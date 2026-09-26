@@ -221,6 +221,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
 .table tfoot td { font-weight: 600; border-top: 1px solid var(--axis); border-bottom: 0; }
 .table .asset-name { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 .table .group-row td { font-weight: 600; background: var(--surface-2); }
+.grp-added { margin-left: auto; font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .table .child-row td:first-child, .form-table td.child { padding-left: 28px; }
 .table .child-row td { color: var(--ink-2); }
 .table .child-row td.up, .table .child-row td.down { color: inherit; }
@@ -255,7 +256,8 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
 .dialog-foot { border-top: 1px solid var(--grid); }
 .dialog-body { padding: 4px 18px 18px; overflow-y: auto; }
 .asset-list { display: grid; gap: 6px; }
-.asset-row { display: grid; grid-template-columns: 12px 1fr 90px auto auto auto auto; gap: 8px; align-items: center; }
+.asset-row { display: grid; grid-template-columns: 12px 1fr 90px auto 84px auto auto auto; gap: 8px; align-items: center; }
+.asset-row .dca { text-align: right; }
 .asset-row label { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--ink-2); white-space: nowrap; }
 .asset-row .btn { height: 30px; min-width: 30px; padding: 0 8px; }
 
