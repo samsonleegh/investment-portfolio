@@ -570,9 +570,9 @@ function renderPortfolio() {
   const passive12 = sum(last12.map((s) => s.passive));
   const tile = (label, value, sub, cls) => h("div", { class: `tile ${cls || ""}` }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
   $("#tiles").replaceChildren(
-    tile("Invested", money(invested), `Money you've put into ${tracked.length} holdings (excl. cash & RSU)`),
-    tile("Total gain · all time", h("span", { class: trackedValue - invested >= 0 ? "up" : "down" }, signed(trackedValue - invested)), `${signedPct((trackedValue - invested) / invested)} on what you invested · now worth ${money(trackedValue)}`),
-    tile("Passive income", money(passive12), `last 12 months · ${money(passive12 / 12)}/mo`),
+    tile("Invested", money(invested), "Excludes cash & RSU"),
+    tile("Total gain", h("span", { class: trackedValue - invested >= 0 ? "up" : "down" }, signed(trackedValue - invested)), signedPct((trackedValue - invested) / invested)),
+    tile("Dividends & interest", money(passive12), "Last 12 months"),
   );
 
   renderTrend(view);
