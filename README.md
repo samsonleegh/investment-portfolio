@@ -44,6 +44,8 @@ The token is stored only in that browser's local storage. Revoke it on GitHub if
 - **Dividends & interest** and a **note** for big one-off expenses.
 - **TikTok RSU** is entered as **units × price**, and the site applies the 15% tax haircut (value = units × price × 0.85). After a buyback, just change the price.
 
+To pick up a newer `data/portfolio.json` (e.g. one Claude updated), use ⚙ Settings → **Import file…** and choose **Cancel** at the prompt. That keeps your data and only adds what's new. **OK** replaces everything.
+
 To edit a past month, tap its row in **Monthly history**. You can add, rename, reorder or hide holdings in ⚙ Settings → Assets. Untick **cost** for holdings with no purchase price, such as cash or RSUs.
 
 ## Files

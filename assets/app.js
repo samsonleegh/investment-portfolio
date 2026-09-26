@@ -1245,6 +1245,38 @@ function renderAssetList() {
             changed();
           },
         }),
+        h(
+          "label",
+          { class: "mv", title: "Enter as units × price (value = units × price × (1 − tax))" },
+          h("input", {
+            type: "checkbox",
+            checked: a.valuation === "units",
+            onchange: (e) => {
+              if (e.target.checked) a.valuation = "units";
+              else delete a.valuation, delete a.factor;
+              changed();
+            },
+          }),
+          "units",
+          a.valuation === "units"
+            ? h("input", {
+                class: "tax",
+                type: "text",
+                inputmode: "decimal",
+                value: a.factor != null ? String(Math.round((1 - a.factor) * 1000) / 10) : "",
+                placeholder: "tax %",
+                title: "Tax / haircut % taken off units × price",
+                "aria-label": `${a.name} tax percent`,
+                onchange: (e) => {
+                  const t = parseAmount(e.target.value);
+                  if (Number.isNaN(t) || (t != null && (t < 0 || t >= 100))) return toast("Enter a % between 0 and 99");
+                  if (t) a.factor = Math.round((1 - t / 100) * 10000) / 10000;
+                  else delete a.factor;
+                  changed();
+                },
+              })
+            : null,
+        ),
         h("label", { class: "mv", title: "Hide from the Add month form" }, h("input", { type: "checkbox", checked: !!a.archived, onchange: (e) => ((a.archived = e.target.checked), changed()) }), "hide"),
         h("button", { class: "btn mv", type: "button", "aria-label": `Move ${a.name} up`, onclick: () => move(i, -1) }, "↑"),
         inUse(a.id)
@@ -1296,7 +1328,14 @@ async function importFile(file) {
       }
     }
     if (!Array.isArray(data.months)) throw new Error("Not a portfolio file");
-    if (state.data && !confirm(`Replace your current data (${state.data.months.length} months) with this file (${data.months.length} months)?`)) return;
+    // Non-destructive by default: Cancel keeps your data and only adds what's new in the file.
+    const replace =
+      state.data &&
+      confirm(
+        `Import ${data.months.length} months from this file.\n\n` +
+          `OK — replace ALL your data (${state.data.months.length} months) with the file\n` +
+          `Cancel — keep your data and just add what's new (settings, newer months, RSU units, updated cash-flow plans)`,
+      );
     if (!state.data) {
       // Imported from the lock screen: treat it as the copy to open.
       state.remote = { payload: isEncrypted(obj) ? obj : data, sha: state.remote?.sha ?? null, source: "import" };
@@ -1304,11 +1343,11 @@ async function importFile(file) {
       await unlock(usedPass, false);
       return persist({ touch: false });
     }
-    state.data = normalise(data);
+    state.data = normalise(replace ? data : mergeAdditions(state.data, data));
     renderAll();
     await persist();
     $("#settings-dialog").close();
-    toast("Imported");
+    toast(replace ? "Replaced with the imported file" : "Added what's new from the file");
   } catch (e) {
     toast(`Import failed: ${e.message}`);
   }
