@@ -1732,6 +1732,7 @@ function renderRetire({ table = true } = {}) {
   const afterOa = base.oaOutYear != null ? base.spendMo * 12 + base.instalment * 12 - (plan.partTime || 0) * 12 : null;
   const rate = (x) => (base.investable > 0 ? x / base.investable : Infinity);
   const needFor4 = Math.max(0, base.spendMo + base.instalment - (0.04 * base.investable) / 12);
+  const passiveMo = sum(series().slice(-12).map((x) => x.passive)) / 12;
   const lastsText = (sim) => (sim.depletedAt == null ? (plan.age ? "Lasts past age 95" : `Lasts ${sim.years}+ years`) : plan.age ? `Runs out around age ${plan.age + sim.depletedAt}` : `Runs out in ~${sim.depletedAt} years`);
   const tile = (label, value, sub, cls) => h("div", { class: `tile ${cls || ""}` }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
   const rateCls = (x) => (x <= 0.04 ? "" : "warn");
@@ -1742,6 +1743,7 @@ function renderRetire({ table = true } = {}) {
     afterOa != null ? tile("Draw once the loan moves to cash", pct(rate(afterOa)), `${money(afterOa)}/yr from year ${base.oaOutYear + 1}`, rateCls(rate(afterOa))) : "",
     tile(`At ${plan.returnPct}% return`, lastsText(base), `At ${plan.returnPct - 2}%: ${lastsText(low).toLowerCase()}`, base.depletedAt ? "warn" : ""),
     tile("Part-time income for a 4% draw", `${money(needFor4)}/mo`, "after the loan moves to cash"),
+    passiveMo ? tile("Dividends & interest you receive", `${money(passiveMo)}/mo`, `covers ${pct(passiveMo / base.spendMo, 0)} of semi-retired spending · already part of the ${plan.returnPct}% return`) : "",
   );
 
   const labels = base.rows.map((r) => (plan.age ? `Age ${plan.age + r.y + 1}` : `Year ${r.y + 1}`));
@@ -1771,6 +1773,7 @@ function renderRetire({ table = true } = {}) {
       loan && oaMonths != null ? h("li", {}, `Your CPF OA (${money(base.oaStart)}) covers your ${money(base.instalment)} share for roughly ${oaMonths} months without new contributions. After that, the loan is paid from cash. That's the biggest jump in what you'd need.`) : null,
       base.loanOffYear ? h("li", {}, `At today's instalment and rate, the loan is paid off in about ${base.loanOffYear} years. The rate can change after your lock-in ends${loan?.lockInEnds ? ` (${loan.lockInEnds})` : ""}.`) : null,
       rsuNote(plan),
+      passiveMo ? h("li", {}, `Your dividends and interest (about ${money(passiveMo)}/mo over the last 12 months) are counted inside the ${plan.returnPct}% expected return, not as extra income. Spending them or selling the same amount has the same effect on the plan. They do mean about ${pct(passiveMo / base.spendMo, 0)} of your semi-retired spending is covered without selling anything, which helps when markets are down.`) : null,
       h("li", {}, "Part-time work helps twice: it covers spending and adds CPF contributions to your OA, keeping the loan on CPF for longer."),
       group ? h("li", {}, "Group term cover is usually tied to your employer and ends when you leave, so it's set to S$0 here.") : null,
       h("li", {}, "Insurance: term life mainly protects people who depend on your income and any co-borrower on the loan. Critical illness pays a lump sum if you're diagnosed, which can matter more without a salary or sick leave. Cancelling is hard to undo: buying cover again later costs more and may exclude conditions. Worth reviewing with a licensed adviser before dropping either."),
