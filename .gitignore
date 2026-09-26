@@ -1,6 +1,7 @@
 # Private source data — never commit
 *.xlsx
 *.xls
+data/portfolio.json
 portfolio-*.json
 
 # Local tooling
