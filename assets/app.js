@@ -568,14 +568,10 @@ function renderPortfolio() {
   const trackedValue = sum(tracked.map(([, v]) => v));
   const last12 = all.slice(-12);
   const passive12 = sum(last12.map((s) => s.passive));
-  const rangeGain = sum(view.slice(1).map((s) => s.market));
-  const rangeNew = sum(view.slice(1).map((s) => s.newMoney));
   const tile = (label, value, sub, cls) => h("div", { class: `tile ${cls || ""}` }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
-  const rangeName = state.ui.range ? `last ${state.ui.range / 12 === 1 ? "12 months" : state.ui.range / 12 + " years"}` : "all time";
   $("#tiles").replaceChildren(
     tile("Invested", money(invested), `Money you've put into ${tracked.length} holdings (excl. cash & RSU)`),
     tile("Total gain · all time", h("span", { class: trackedValue - invested >= 0 ? "up" : "down" }, signed(trackedValue - invested)), `${signedPct((trackedValue - invested) / invested)} on what you invested · now worth ${money(trackedValue)}`),
-    tile(`Market gain · ${rangeName}`, h("span", { class: rangeGain >= 0 ? "up" : "down" }, signed(rangeGain)), `Growth from markets in this period. You also added ${money(rangeNew)}.`),
     tile("Passive income", money(passive12), `last 12 months · ${money(passive12 / 12)}/mo`),
   );
 
