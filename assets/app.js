@@ -711,7 +711,9 @@ function renderHoldings(last, prev) {
       for (const l of lines) rows.push(h("tr", { class: "child-row" }, h("td", {}, h("div", { class: "asset-name" }, l.a.name, est.has(l.id) ? h("span", { class: "est", title: "Estimated" }, "~") : null)), ...cells(l.v, l.inv, l.pv)));
     } else {
       const l = lines[0];
-      rows.push(h("tr", {}, h("td", {}, h("div", { class: "asset-name" }, swatch, l.a.name, est.has(l.id) ? h("span", { class: "est", title: "Estimated" }, "~") : null)), ...cells(l.v, l.inv, l.pv)));
+      const u = last.m.units?.[l.id];
+      const unitNote = u != null ? h("span", { class: "muted small" }, ` ${nf0.format(u)} × ${nf2.format(last.m.price?.[l.id])}${l.a.factor && l.a.factor !== 1 ? ` · after ${Math.round((1 - l.a.factor) * 100)}% tax` : ""}`) : null;
+      rows.push(h("tr", {}, h("td", {}, h("div", { class: "asset-name" }, swatch, l.a.name, unitNote, est.has(l.id) ? h("span", { class: "est", title: "Estimated" }, "~") : null)), ...cells(l.v, l.inv, l.pv)));
     }
   }
   const body = h("tbody", {}, rows);
@@ -823,22 +825,40 @@ function buildMonthForm() {
       else if (a.dca != null) added = a.dca; // default monthly amount (Settings → Assets)
       else if (prev?.invested[a.id] != null) added = prev.invested[a.id] - (prev2?.invested[a.id] ?? 0);
     }
-    const valInput = h("input", { type: "text", inputmode: "decimal", name: `v_${a.id}`, value: money2(value), placeholder: "0", "aria-label": `${a.name} market value`, oninput: updateMonthTotal });
+    // Unit-priced holdings (e.g. RSUs): value = units × price × after-tax factor.
+    const unitsMode = a.valuation === "units" && (src ? src.units?.[a.id] != null : true);
+    const factor = a.factor ?? 1;
+    const valInput = h("input", { type: "text", inputmode: "decimal", name: `v_${a.id}`, value: money2(value), placeholder: "0", readOnly: unitsMode, class: unitsMode ? "computed" : null, "aria-label": `${a.name} market value`, oninput: updateMonthTotal });
     const hint = h("div", { class: "hint" });
     const setHint = () => {
       const v = parseAmount(valInput.value);
-      if (prevVal == null) hint.textContent = "new";
-      else if (v == null || isNaN(v)) hint.textContent = `last ${compact(prevVal)}`;
-      else hint.textContent = `last ${compact(prevVal)} · ${signedPct((v - prevVal) / prevVal)}`;
+      const tax = unitsMode && factor !== 1 ? ` · after ${Math.round((1 - factor) * 100)}% tax` : "";
+      if (prevVal == null) hint.textContent = "new" + tax;
+      else if (v == null || isNaN(v)) hint.textContent = `last ${compact(prevVal)}${tax}`;
+      else hint.textContent = `last ${compact(prevVal)} · ${signedPct((v - prevVal) / prevVal)}${tax}`;
     };
     valInput.addEventListener("input", setHint);
+    let unitInputs = null;
+    if (unitsMode) {
+      const from = src || prev;
+      const recompute = () => {
+        const u = parseAmount(uIn.value);
+        const p = parseAmount(pIn.value);
+        valInput.value = u != null && p != null && !isNaN(u) && !isNaN(p) ? money2(Math.round(u * p * factor * 100) / 100) : "";
+        setHint();
+        updateMonthTotal();
+      };
+      const uIn = h("input", { type: "text", inputmode: "decimal", name: `u_${a.id}`, value: from?.units?.[a.id] ?? "", placeholder: "Units", "aria-label": `${a.name} units`, oninput: recompute });
+      const pIn = h("input", { type: "text", inputmode: "decimal", name: `pr_${a.id}`, value: from?.price?.[a.id] ?? "", placeholder: "Price", "aria-label": `${a.name} price per unit`, oninput: recompute });
+      unitInputs = h("div", { class: "units-row" }, uIn, h("span", { class: "muted" }, "×"), pIn);
+    }
     setHint();
     body.append(
       h(
         "tr",
         {},
         h("td", { class: a.group ? "child" : "" }, h("div", { class: "asset-name" }, a.group ? null : h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.name)),
-        h("td", { "data-label": "Market value" }, valInput, hint),
+        h("td", { "data-label": "Market value" }, unitInputs, valInput, hint),
         h("td", { "data-label": "Added this month" }, a.costTracked ? h("input", { type: "text", inputmode: "decimal", name: `c_${a.id}`, value: money2(added), placeholder: "0", "aria-label": `${a.name} added this month`, oninput: updateMonthTotal }) : h("div", { class: "hint" }, "no cost basis")),
       ),
     );
@@ -903,6 +923,11 @@ async function saveMonthForm() {
     vi.setAttribute("aria-invalid", String(Number.isNaN(v)));
     ci?.setAttribute("aria-invalid", String(Number.isNaN(c)));
     if (v) m.values[a.id] = v;
+    const ui = $(`#mf-assets input[name="u_${a.id}"]`);
+    if (ui && v) {
+      (m.units ||= {})[a.id] = parseAmount(ui.value);
+      (m.price ||= {})[a.id] = parseAmount($(`#mf-assets input[name="pr_${a.id}"]`).value);
+    }
     if (a.costTracked && (v || c)) {
       const base = prev?.invested[a.id] ?? 0;
       m.invested[a.id] = Math.round((base + (c || 0)) * 100) / 100;

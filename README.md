@@ -42,6 +42,7 @@ The token is stored only in that browser's local storage. Revoke it on GitHub if
 - **Market value**: what the holding is worth at month end. You can type sums like `83536+76735.32`, just like in Excel.
 - **Added this month**: new money you put in (negative for a withdrawal). The site keeps a running total, which becomes the cost basis used to calculate gain/loss. If you edit a past month's contribution, later months adjust automatically.
 - **Dividends & interest** and a **note** for big one-off expenses.
+- **TikTok RSU** is entered as **units × price**, and the site applies the 15% tax haircut (value = units × price × 0.85). After a buyback, just change the price.
 
 To edit a past month, tap its row in **Monthly history**. You can add, rename, reorder or hide holdings in ⚙ Settings → Assets. Untick **cost** for holdings with no purchase price, such as cash or RSUs.
 
