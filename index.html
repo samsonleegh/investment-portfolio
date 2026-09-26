@@ -110,6 +110,10 @@
                 <h2>Allocation</h2>
                 <p class="muted small" id="alloc-sub"></p>
               </div>
+              <div class="seg small" id="alloc-mode" role="radiogroup" aria-label="Allocation view">
+                <button data-alloc="account" role="radio">Accounts</button>
+                <button data-alloc="holding" role="radio">Holdings</button>
+              </div>
             </div>
             <div id="alloc" class="barlist"></div>
           </div>
@@ -119,7 +123,7 @@
           <div class="card-head">
             <div>
               <h2>Holdings</h2>
-              <p class="muted small">Gain is market value minus what you invested. Cash and RSUs have no cost basis.</p>
+              <p class="muted small">Gain is market value minus what you invested. Cash and RSUs have no cost basis. IBKR fund costs are your contributions split in proportion to IBKR's cost per fund.</p>
             </div>
           </div>
           <div class="table-wrap"><table id="holdings" class="table"></table></div>

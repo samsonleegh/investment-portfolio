@@ -56,6 +56,20 @@ To edit a past month, tap its row in **Monthly history**. You can add, rename, r
 | `scripts/export_from_excel.py` | `Debt.xlsx` → `data/portfolio.json` |
 | `scripts/encrypt.mjs` | Encrypt (or `--decrypt`) the data file |
 
+## IBKR funds
+
+The sheet tracked the whole IBKR account as one "IWDA" number. `scripts/split_ibkr.py` splits it into funds (IWDA, QQQM, SLV, GLD, GLDM, NLR, ITPS, XYLD, ELFY) plus IBKR cash, using data pulled from IBKR into the git-ignored `data/ibkr/` folder:
+
+- **Jun 2025 onward:** each fund's month-end quantity is rebuilt by rewinding IBKR trades from current positions, then valued at IBKR month-end prices. The totals match IBKR's own ETF totals to within 0.1%.
+- **Before Jun 2025:** one "IBKR (all funds)" line. IBKR's trade history doesn't go back further.
+- **Cost:** IBKR's "invested" is your sheet's contribution total, split across funds in proportion to IBKR's cost per fund. Your contributions come to about S$1.02 per US$1 of IBKR cost, mainly because gains were rolled over when you switched funds. So per-fund gains here are about 24% higher than IBKR's own figures, but still comparable between funds.
+
+Funds sharing an **account** (⚙ Settings → Assets) show as one band in the trend chart and are grouped in the holdings table.
+
+```sh
+.venv/bin/python scripts/export_from_excel.py && .venv/bin/python scripts/split_ibkr.py
+```
+
 ## Notes on the imported history
 
 - Sep–Oct 2022 and Mar 2024 were mostly blank in the sheet. Those values are interpolated and marked `~`.

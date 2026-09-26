@@ -163,9 +163,9 @@ const state = {
   dirty: false,
   syncing: false,
   remote: null, // { payload, sha, source }
-  ui: { tab: "portfolio", range: 36, trend: "total", historyAll: false, cfMonth: null, ...store.get(K.ui, {}) },
+  ui: { tab: "portfolio", range: 36, trend: "total", alloc: "account", historyAll: false, cfMonth: null, ...store.get(K.ui, {}) },
 };
-const saveUI = () => store.set(K.ui, { tab: state.ui.tab, range: state.ui.range, trend: state.ui.trend });
+const saveUI = () => store.set(K.ui, { tab: state.ui.tab, range: state.ui.range, trend: state.ui.trend, alloc: state.ui.alloc });
 
 async function fetchRemote() {
   if (ghReady()) {
@@ -384,11 +384,23 @@ function series() {
   });
 }
 
-/** Asset colour: fixed by position in the asset list (colour follows the entity). */
-function assetColor(id) {
-  const idx = state.data.assets.findIndex((a) => a.id === id);
-  return cssVar(`--s${idx >= 0 && idx < 7 ? idx + 1 : 8}`);
+/**
+ * Chart entities: an account group (e.g. all IBKR funds) or a standalone asset,
+ * in asset-list order. Colour is fixed by entity position (colour follows the entity);
+ * entities past the 7th share the "Other" colour.
+ */
+function entities() {
+  const list = [];
+  const byKey = {};
+  for (const a of state.data.assets) {
+    const key = a.group ? `g:${a.group}` : a.id;
+    if (!byKey[key]) list.push((byKey[key] = { key, name: a.group || a.name, group: a.group || null, ids: [], index: list.length }));
+    byKey[key].ids.push(a.id);
+  }
+  return list;
 }
+const entityColor = (e) => cssVar(`--s${e && e.index < 7 ? e.index + 1 : 8}`);
+const assetColor = (id) => entityColor(entities().find((e) => e.ids.includes(id)));
 
 /* =====================================================================
    Charts
@@ -564,12 +576,13 @@ function renderTrend(view) {
       options: opts,
     });
   } else {
-    $("#trend-sub").textContent = "Market value of each holding, stacked. Smaller holdings past the 7th are grouped as Other.";
-    const ids = state.data.assets.map((a) => a.id).filter((id) => view.some((s) => s.m.values[id]));
-    const main = ids.filter((id) => state.data.assets.findIndex((a) => a.id === id) < 7);
-    const other = ids.filter((id) => !main.includes(id));
-    const groups = main.map((id) => ({ label: assetMap()[id].name, color: assetColor(id), get: (m) => m.values[id] || 0 }));
-    if (other.length) groups.push({ label: "Other", color: cssVar("--s8"), get: (m) => sum(other.map((id) => m.values[id])) });
+    $("#trend-sub").textContent = "Market value stacked by account or holding. Accounts like IBKR are one band; smaller ones past the 7th are grouped as Other.";
+    const valueOf = (e, m) => sum(e.ids.map((id) => m.values[id]));
+    const active = entities().filter((e) => view.some((s) => valueOf(e, s.m)));
+    const main = active.filter((e) => e.index < 7);
+    const other = active.filter((e) => e.index >= 7);
+    const groups = main.map((e) => ({ label: e.name, color: entityColor(e), get: (m) => valueOf(e, m) }));
+    if (other.length) groups.push({ label: "Other", color: cssVar("--s8"), get: (m) => sum(other.map((e) => valueOf(e, m))) });
     const opts = baseOptions({ stacked: true });
     opts.plugins.tooltip.itemSort = (a, b) => b.datasetIndex - a.datasetIndex;
     opts.plugins.tooltip.callbacks.footer = (items) => `Total ${money(view[items[0].dataIndex].total)}`;
@@ -636,46 +649,72 @@ function barRow({ name, color, value, frac, right, sub }) {
 function renderAllocation(last) {
   const amap = assetMap();
   const t = last.total;
-  const rows = Object.entries(last.m.values)
-    .filter(([, v]) => v > 0)
-    .sort((a, b) => b[1] - a[1]);
-  const max = rows[0]?.[1] || 1;
-  $("#alloc-sub").textContent = `Share of ${money(t)} at ${monthLabel(last.month, true)}.`;
-  $("#alloc").replaceChildren(
-    ...rows.map(([id, v]) => barRow({ name: amap[id]?.name || id, color: assetColor(id), value: v, frac: v / max, right: pct(v / t), sub: compact(v) })),
-  );
+  const byAccount = state.ui.alloc !== "holding";
+  $$("#alloc-mode button").forEach((b) => b.setAttribute("aria-checked", String((b.dataset.alloc === "holding") !== byAccount)));
+  const rows = (
+    byAccount
+      ? entities().map((e) => ({ name: e.name, color: entityColor(e), v: sum(e.ids.map((id) => last.m.values[id])) }))
+      : Object.entries(last.m.values).map(([id, v]) => {
+          const a = amap[id];
+          return { name: a?.group ? `${a.name}` : a?.name || id, color: assetColor(id), v };
+        })
+  )
+    .filter((r) => r.v > 0)
+    .sort((a, b) => b.v - a.v);
+  const max = rows[0]?.v || 1;
+  $("#alloc-sub").textContent = `Share of ${money(t)} at ${monthLabel(last.month, true)}${byAccount ? "" : " · account colours"}.`;
+  $("#alloc").replaceChildren(...rows.map((r) => barRow({ name: r.name, color: r.color, value: r.v, frac: r.v / max, right: pct(r.v / t), sub: compact(r.v) })));
 }
 
 function renderHoldings(last, prev) {
   const amap = assetMap();
-  const rows = Object.entries(last.m.values).sort((a, b) => b[1] - a[1]);
   const est = new Set(last.m.estimated || []);
   const head = h("thead", {}, h("tr", {}, h("th", {}, "Asset"), ...["Value", "Invested", "Gain", "Gain %", "vs last month", "Share"].map((t) => h("th", { class: "num" }, t))));
+  const cls = (g) => `num ${g == null ? "" : g >= 0 ? "up" : "down"}`;
+  // One row of numbers; `inv`/`pv` null means "no cost basis" / "not held last month".
+  const cells = (v, inv, pv) => {
+    const g = inv != null ? v - inv : null;
+    return [
+      h("td", { class: "num" }, money(v)),
+      h("td", { class: "num" }, inv != null ? money(inv) : "–"),
+      h("td", { class: cls(g) }, g != null ? signed(g) : "–"),
+      h("td", { class: cls(g) }, g != null && inv ? signedPct(g / inv) : "–"),
+      h("td", { class: "num" }, pv != null ? signed(v - pv) : "new"),
+      h("td", { class: "num" }, pct(v / last.total)),
+    ];
+  };
+  const line = (id) => {
+    const v = last.m.values[id];
+    const a = amap[id] || { name: id };
+    return { id, a, v, inv: a.costTracked ? last.m.invested?.[id] ?? null : null, pv: prev?.m.values[id] ?? null };
+  };
   let tv = 0, ti = 0, tg = 0, tm = 0;
-  const body = h(
-    "tbody",
-    {},
-    rows.map(([id, v]) => {
-      const a = amap[id] || { name: id };
-      const inv = a.costTracked ? last.m.invested?.[id] : null;
-      const g = inv != null ? v - inv : null;
-      const pv = prev?.m.values[id];
-      tv += v;
-      if (g != null) (ti += inv), (tg += g);
-      if (pv != null) tm += v - pv;
-      return h(
-        "tr",
-        {},
-        h("td", {}, h("div", { class: "asset-name" }, h("span", { class: "swatch", style: { background: assetColor(id) } }), a.name, est.has(id) ? h("span", { class: "est", title: "Estimated" }, "~") : null)),
-        h("td", { class: "num" }, money(v)),
-        h("td", { class: "num" }, inv != null ? money(inv) : "–"),
-        h("td", { class: `num ${g == null ? "" : g >= 0 ? "up" : "down"}` }, g != null ? signed(g) : "–"),
-        h("td", { class: `num ${g == null ? "" : g >= 0 ? "up" : "down"}` }, g != null && inv ? signedPct(g / inv) : "–"),
-        h("td", { class: "num" }, pv != null ? `${signed(v - pv)}` : "new"),
-        h("td", { class: "num" }, pct(v / last.total)),
-      );
-    }),
-  );
+  const rows = [];
+  const blocks = entities()
+    .map((e) => ({ e, lines: e.ids.filter((id) => last.m.values[id]).map(line).sort((a, b) => b.v - a.v) }))
+    .filter((b) => b.lines.length)
+    .sort((a, b) => sum(b.lines.map((l) => l.v)) - sum(a.lines.map((l) => l.v)));
+  for (const { e, lines } of blocks) {
+    for (const l of lines) {
+      tv += l.v;
+      if (l.inv != null) (ti += l.inv), (tg += l.v - l.inv);
+      if (l.pv != null) tm += l.v - l.pv;
+    }
+    const swatch = h("span", { class: "swatch", style: { background: entityColor(e) } });
+    if (e.group) {
+      // Account subtotal; its gain covers only the holdings that have a cost basis.
+      const v = sum(lines.map((l) => l.v));
+      const withCost = lines.filter((l) => l.inv != null);
+      const inv = withCost.length ? sum(withCost.map((l) => l.inv)) + sum(lines.filter((l) => l.inv == null).map((l) => l.v)) : null;
+      const pv = lines.some((l) => l.pv != null) ? sum(lines.map((l) => l.pv ?? 0)) : null;
+      rows.push(h("tr", { class: "group-row" }, h("td", {}, h("div", { class: "asset-name" }, swatch, e.name, h("span", { class: "muted small" }, ` · ${lines.length} holdings`))), ...cells(v, inv, pv)));
+      for (const l of lines) rows.push(h("tr", { class: "child-row" }, h("td", {}, h("div", { class: "asset-name" }, l.a.name, est.has(l.id) ? h("span", { class: "est", title: "Estimated" }, "~") : null)), ...cells(l.v, l.inv, l.pv)));
+    } else {
+      const l = lines[0];
+      rows.push(h("tr", {}, h("td", {}, h("div", { class: "asset-name" }, swatch, l.a.name, est.has(l.id) ? h("span", { class: "est", title: "Estimated" }, "~") : null)), ...cells(l.v, l.inv, l.pv)));
+    }
+  }
+  const body = h("tbody", {}, rows);
   const foot = h(
     "tfoot",
     {},
@@ -763,8 +802,11 @@ function buildMonthForm() {
   const table = $("#mf-assets");
   const head = h("thead", {}, h("tr", {}, h("th", {}, "Holding"), h("th", { class: "num" }, "Market value"), h("th", { class: "num" }, "Added this month")));
   const body = h("tbody", {});
+  let lastGroup = null;
   for (const a of state.data.assets) {
     if (a.archived && !src?.values[a.id]) continue;
+    if (a.group && a.group !== lastGroup) body.append(h("tr", { class: "group-row" }, h("td", { colspan: "3" }, h("div", { class: "asset-name" }, h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.group))));
+    lastGroup = a.group || null;
     const prevVal = prev?.values[a.id];
     const value = src ? src.values[a.id] : prevVal;
     let added = null;
@@ -787,7 +829,7 @@ function buildMonthForm() {
       h(
         "tr",
         {},
-        h("td", {}, h("div", { class: "asset-name" }, h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.name)),
+        h("td", { class: a.group ? "child" : "" }, h("div", { class: "asset-name" }, a.group ? null : h("span", { class: "swatch", style: { background: assetColor(a.id) } }), a.name)),
         h("td", { "data-label": "Market value" }, valInput, hint),
         h("td", { "data-label": "Added this month" }, a.costTracked ? h("input", { type: "text", inputmode: "decimal", name: `c_${a.id}`, value: money2(added), placeholder: "0", "aria-label": `${a.name} added this month` }) : h("div", { class: "hint" }, "no cost basis")),
       ),
@@ -1103,6 +1145,7 @@ function renderAssetList() {
         { class: "asset-row" },
         h("span", { class: "swatch", style: { background: assetColor(a.id) } }),
         h("input", { value: a.name, "aria-label": "Asset name", onchange: (e) => ((a.name = e.target.value.trim() || a.name), changed()) }),
+        h("input", { class: "mv", value: a.group || "", placeholder: "Account", title: "Account (groups holdings, e.g. IBKR)", "aria-label": `${a.name} account`, onchange: (e) => ((a.group = e.target.value.trim() || undefined), changed()) }),
         h("label", { title: "Track purchase cost for gain/loss" }, h("input", { type: "checkbox", checked: a.costTracked, onchange: (e) => ((a.costTracked = e.target.checked), changed()) }), "cost"),
         h("label", { class: "mv", title: "Hide from the Add month form" }, h("input", { type: "checkbox", checked: !!a.archived, onchange: (e) => ((a.archived = e.target.checked), changed()) }), "hide"),
         h("button", { class: "btn mv", type: "button", "aria-label": `Move ${a.name} up`, onclick: () => move(i, -1) }, "↑"),
@@ -1242,6 +1285,13 @@ function wireStatic() {
   $$("#trend-mode button").forEach((b) =>
     b.addEventListener("click", () => {
       state.ui.trend = b.dataset.mode;
+      saveUI();
+      renderPortfolio();
+    }),
+  );
+  $$("#alloc-mode button").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.ui.alloc = b.dataset.alloc;
       saveUI();
       renderPortfolio();
     }),

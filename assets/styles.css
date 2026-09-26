@@ -220,6 +220,12 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
 .table tbody tr:last-child td { border-bottom: 0; }
 .table tfoot td { font-weight: 600; border-top: 1px solid var(--axis); border-bottom: 0; }
 .table .asset-name { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.table .group-row td { font-weight: 600; background: var(--surface-2); }
+.table .child-row td:first-child, .form-table td.child { padding-left: 28px; }
+.table .child-row td { color: var(--ink-2); }
+.table .child-row td.up, .table .child-row td.down { color: inherit; }
+.table .child-row td.up { color: var(--up); }
+.table .child-row td.down { color: var(--down); }
 #history tbody tr { cursor: pointer; }
 #history tbody tr:hover td { background: var(--surface-2); }
 #history td.note { color: var(--ink-2); min-width: 240px; max-width: 360px; white-space: pre-line; font-size: 12.5px; }
@@ -249,7 +255,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
 .dialog-foot { border-top: 1px solid var(--grid); }
 .dialog-body { padding: 4px 18px 18px; overflow-y: auto; }
 .asset-list { display: grid; gap: 6px; }
-.asset-row { display: grid; grid-template-columns: 12px 1fr auto auto auto auto; gap: 8px; align-items: center; }
+.asset-row { display: grid; grid-template-columns: 12px 1fr 90px auto auto auto auto; gap: 8px; align-items: center; }
 .asset-row label { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--ink-2); white-space: nowrap; }
 .asset-row .btn { height: 30px; min-width: 30px; padding: 0 8px; }
 
@@ -283,6 +289,8 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
   .form-table tr { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; padding: 10px 0; border-bottom: 1px solid var(--grid); }
   .form-table td { display: block; padding: 0; border: 0; }
   .form-table td:first-child { grid-column: 1 / -1; font-weight: 500; }
+  .form-table tr.group-row { display: block; padding: 8px 0 0; border: 0; }
+  .form-table td.child { padding-left: 0; }
   .form-table td[data-label]::before { content: attr(data-label); display: block; font-size: 11.5px; color: var(--ink-2); margin-bottom: 2px; }
   .form-table .hint { text-align: left; }
 }

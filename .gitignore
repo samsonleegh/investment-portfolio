@@ -9,3 +9,4 @@ portfolio-*.json
 .claude/
 .DS_Store
 __pycache__/
+data/ibkr/
