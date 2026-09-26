@@ -1622,7 +1622,7 @@ const INSURANCE_DEFAULTS = [
   ["Dad's health insurance", 1150],
 ];
 
-const PLAN_DEFAULTS = { partTime: 0, partTimeScenario: 1000, cpfInflow: 0, returnPct: 5, inflationPct: 2.5, age: 35, horizon: 40, cpfPayout: 0, includeRsu: true, buffer: 30000, rsuGrowthPct: 5, rsuLeaverPrice: true };
+const PLAN_DEFAULTS = { partTime: 0, partTimeScenario: 1000, cpfInflow: 0, returnPct: 5, inflationPct: 2.5, age: 35, horizon: 40, cpfPayout: null, includeRsu: true, buffer: 30000, rsuGrowthPct: 5, rsuLeaverPrice: true };
 
 function defaultPlan() {
   const b = state.data.budgets.at(-1);
@@ -1646,6 +1646,24 @@ function latestBuyback(asset) {
   const b = [...(asset?.buybacks || [])].sort((x, y) => x.when.localeCompare(y.when)).at(-1);
   return b || null;
 }
+
+/**
+ * Very rough CPF LIFE (Standard) payout from 65, in today's dollars: today's SA grown at
+ * 4% (≈1.5% real) with no new contributions, × ~0.55%/month of the balance at 65.
+ */
+function estimateCpfLife(plan) {
+  const sa = [...state.data.months].reverse().find((m) => m.cpf)?.cpf?.sa;
+  if (!sa || !plan.age || plan.age >= 65) return null;
+  // 4% base + extra interest: 1% on the first S$60K before 55; from 55, 2% on the first S$30K and 1% on the next S$30K.
+  let bal = sa;
+  for (let age = plan.age; age < 65; age++) {
+    const extra = age < 55 ? Math.min(bal, 60000) * 0.01 : Math.min(bal, 30000) * 0.02 + Math.min(Math.max(bal - 30000, 0), 30000) * 0.01;
+    bal = bal * 1.04 + extra;
+  }
+  const real = bal / (1 + (plan.inflationPct || 0) / 100) ** (65 - plan.age);
+  return Math.round((real * 0.0055) / 10) * 10;
+}
+const cpfPayoutUsed = (plan) => (plan.cpfPayout != null ? plan.cpfPayout : estimateCpfLife(plan) || 0);
 
 function simulate(plan, returnPct) {
   const months = state.data.months;
@@ -1677,7 +1695,7 @@ function simulate(plan, returnPct) {
     const grow = (1 + inf) ** y;
     const spend = spendMo * 12 * grow;
     // Both entered in today's dollars, so they keep pace with inflation like spending.
-    const income = ((plan.partTime || 0) + (plan.age && plan.age + y >= 65 ? plan.cpfPayout || 0 : 0)) * 12 * grow;
+    const income = ((plan.partTime || 0) + (plan.age && plan.age + y >= 65 ? cpfPayoutUsed(plan) : 0)) * 12 * grow;
     const due = loanBal > 0 ? Math.min(instalment * 12, loanBal * (1 + loanRate)) : 0;
     loanBal = Math.max(0, loanBal * (1 + loanRate) - due);
     if (loanBal === 0 && due > 0 && loanOffYear == null) loanOffYear = y + 1;
@@ -1727,6 +1745,8 @@ let retireSaveTimer;
 function renderRetire({ table = true } = {}) {
   const plan = (state.data.plan ||= defaultPlan());
   for (const [k, v] of Object.entries(PLAN_DEFAULTS)) if (plan[k] === undefined) plan[k] = v;
+  // Earlier plans stored 0 as "not set"; switch those to the automatic estimate.
+  if (plan.cpfPayout === 0 && !plan.cpfPayoutSet) plan.cpfPayout = null;
   const save = () => {
     clearTimeout(retireSaveTimer);
     retireSaveTimer = setTimeout(() => persist(), 700);
@@ -1789,7 +1809,11 @@ function renderRetire({ table = true } = {}) {
       base.loanOffYear ? h("li", {}, `At today's instalment and rate, the loan is paid off in about ${base.loanOffYear} years. The rate can change after your lock-in ends${loan?.lockInEnds ? ` (${loan.lockInEnds})` : ""}.`) : null,
       rsuNote(plan),
       passiveMo ? h("li", {}, `Your dividends and interest (about ${money(passiveMo)}/mo over the last 12 months) are counted inside the ${plan.returnPct}% expected return, not as extra income. Spending them or selling the same amount has the same effect on the plan. They do mean about ${pct(passiveMo / base.spendMo, 0)} of your semi-retired spending is covered without selling anything, which helps when markets are down.`) : null,
-      !plan.cpfPayout ? h("li", {}, "CPF LIFE payouts from 65 aren't included yet (set to S$0). Get an estimate from the CPF LIFE estimator on cpf.gov.sg and enter it in today's dollars. The estimator shows future dollars; divide by about 2.1 for 30 years of 2.5% inflation.") : null,
+      plan.cpfPayout == null && estimateCpfLife(plan)
+        ? h("li", {}, `CPF LIFE from 65 uses a rough estimate of ${money(estimateCpfLife(plan))}/mo in today's dollars: your SA growing at 4% plus CPF's extra interest (1% on the first S$60K, more from 55), with no new contributions, paying about 0.55% of it a month. For your real figure, use the CPF LIFE estimator on cpf.gov.sg and enter it in today's dollars (its figures are future dollars; divide by about 2.1).`)
+        : !cpfPayoutUsed(plan)
+          ? h("li", {}, "CPF LIFE payouts from 65 aren't included. Enter your age and CPF balances, or type an estimate in today's dollars.")
+          : null,
       h("li", {}, "Part-time work helps twice: it covers spending and adds CPF contributions to your OA, keeping the loan on CPF for longer."),
       group ? h("li", {}, "Group term cover is usually tied to your employer and ends when you leave, so it's set to S$0 here.") : null,
       h("li", {}, "Insurance: term life mainly protects people who depend on your income and any co-borrower on the loan. Critical illness pays a lump sum if you're diagnosed, which can matter more without a salary or sick leave. Cancelling is hard to undo: buying cover again later costs more and may exclude conditions. Worth reviewing with a licensed adviser before dropping either."),
@@ -1814,6 +1838,7 @@ function renderRetire({ table = true } = {}) {
           e.target.setAttribute("aria-invalid", String(Number.isNaN(v)));
           if (Number.isNaN(v)) return;
           plan[key] = v == null ? null : int ? Math.round(v) : v;
+          if (key === "cpfPayout") plan.cpfPayoutSet = v != null;
           renderRetire({ table: false });
           save();
         },
@@ -1827,7 +1852,7 @@ function renderRetire({ table = true } = {}) {
     field("Inflation (%/yr)", "inflationPct"),
     field("Cash buffer kept aside (S$)", "buffer"),
     field("Your age (optional)", "age", { hint: "e.g. 35", int: true }),
-    field("CPF LIFE from 65 (S$/mo, today's dollars)", "cpfPayout", { hint: "CPF LIFE estimator" }),
+    field("CPF LIFE from 65 (S$/mo, today's dollars)", "cpfPayout", { hint: estimateCpfLife(plan) ? `est. ${money(estimateCpfLife(plan))} · blank = estimate` : "CPF LIFE estimator" }),
     field("Years to plan for (if no age)", "horizon", { int: true }),
     field("RSU growth (%/yr)", "rsuGrowthPct"),
     field("Tax on RSU when sold (%)", "rsuTaxPct", { hint: "15" }),
