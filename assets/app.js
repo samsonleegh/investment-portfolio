@@ -234,7 +234,7 @@ async function unlock(pass, remember) {
 
   // Prefer unsynced local edits if they're newer than what's on the server.
   const useCache = cacheData && (!remoteData || (cache.dirty && (cacheData.updatedAt || "") > (remoteData.updatedAt || "")));
-  state.data = normalise(useCache ? cacheData : remoteData || emptyData());
+  state.data = normalise(useCache ? (remoteData ? mergeAdditions(cacheData, remoteData) : cacheData) : remoteData || emptyData());
   state.sha = state.remote?.sha ?? cache?.sha ?? null;
   state.dirty = Boolean(useCache && cache.dirty) || !isEncrypted(rp || {});
   state.pass = pass;
@@ -249,6 +249,36 @@ async function unlock(pass, remember) {
     setSync(ghReady() ? "synced" : "local", ghReady() ? "Synced with GitHub" : "Viewing only — add a GitHub token in Settings to save from this device");
   }
   renderAll();
+}
+
+/**
+ * Local edits win, but pick up what the data file added since: new settings on
+ * existing assets (DCA, account, units pricing), units/price on months whose value
+ * is unchanged, and months after this device's latest month.
+ */
+function mergeAdditions(local, remote) {
+  const assets = Object.fromEntries(local.assets.map((a) => [a.id, a]));
+  for (const ra of remote.assets || []) {
+    const la = assets[ra.id];
+    if (!la) continue;
+    for (const [k, v] of Object.entries(ra)) if (la[k] === undefined) la[k] = v;
+  }
+  const byMonth = Object.fromEntries(local.months.map((m) => [m.month, m]));
+  const latest = local.months.reduce((mx, m) => (m.month > mx ? m.month : mx), "");
+  for (const rm of remote.months || []) {
+    const lm = byMonth[rm.month];
+    if (!lm) {
+      if (rm.month > latest) local.months.push(rm);
+      continue;
+    }
+    for (const id of Object.keys(rm.units || {})) {
+      if (lm.units?.[id] == null && Math.abs((lm.values?.[id] ?? NaN) - rm.values[id]) < 0.02) {
+        (lm.units ||= {})[id] = rm.units[id];
+        (lm.price ||= {})[id] = rm.price?.[id];
+      }
+    }
+  }
+  return local;
 }
 
 function emptyData() {
