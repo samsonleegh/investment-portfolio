@@ -1654,7 +1654,8 @@ function simulate(plan, returnPct) {
   const rsuNow = units.reduce((t, a) => t + (last?.values[a.id] || 0), 0);
   // Leaving the company: former-employee buyback price instead of the current-employee one.
   const lb = latestBuyback(units[0]);
-  const leaver = plan.rsuLeaverPrice !== false && lb?.former && lb?.current ? lb.former / lb.current : 1;
+  // Already a former employee: the recorded price is the former-employee one, so no further discount.
+  const leaver = !units[0]?.formerEmployee && plan.rsuLeaverPrice !== false && lb?.former && lb?.current ? lb.former / lb.current : 1;
   let rsu = plan.includeRsu ? rsuNow * leaver : 0;
   const investable = (last ? total(last) : 0) - rsuNow - (plan.buffer || 0);
   const cpf = [...months].reverse().find((m) => m.cpf)?.cpf || {};
@@ -1698,7 +1699,15 @@ function rsuNote(plan) {
   const b = [...a.buybacks].sort((x, y) => x.when.localeCompare(y.when));
   const first = b[0], last = b.at(-1);
   const yrs = (new Date(last.when + "-01") - new Date(first.when + "-01")) / (365.25 * 864e5);
-  const cagr = yrs > 0 ? (last.current / first.current) ** (1 / yrs) - 1 : null;
+  const key = a.formerEmployee ? "former" : "current";
+  const cagr = yrs > 0 ? (last[key] / first[key]) ** (1 / yrs) - 1 : null;
+  if (a.formerEmployee)
+    return h(
+      "li",
+      {},
+      `${a.name}: as a former employee you get the former-employee buyback price, which rose from US$${first.former} (${monthLabel(first.when)}) to US$${last.former} (${monthLabel(last.when)}), about ${pct(cagr, 0)} a year. ` +
+        `The plan assumes ${plan.rsuGrowthPct}%/yr from here; past buyback growth isn't guaranteed.`,
+    );
   return h(
     "li",
     {},
@@ -1802,7 +1811,9 @@ function renderRetire({ table = true } = {}) {
     field("Years to plan for (if no age)", "horizon", { int: true }),
     field("RSU growth (%/yr)", "rsuGrowthPct"),
     h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.includeRsu, onchange: (e) => ((plan.includeRsu = e.target.checked), renderRetire({ table: false }), save()) }), "Count TikTok RSU as investable"),
-    h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.rsuLeaverPrice !== false, onchange: (e) => ((plan.rsuLeaverPrice = e.target.checked), renderRetire({ table: false }), save()) }), "Value RSU at former-employee buyback price"),
+    state.data.assets.some((a) => a.valuation === "units" && a.buybacks?.length && !a.formerEmployee)
+      ? h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.rsuLeaverPrice !== false, onchange: (e) => ((plan.rsuLeaverPrice = e.target.checked), renderRetire({ table: false }), save()) }), "Value RSU at former-employee buyback price")
+      : null,
     h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Reset the semi-retire plan to the starting scenario?")) { state.data.plan = defaultPlan(); renderRetire(); save(); } } }, "Reset to starting scenario"),
   );
 
