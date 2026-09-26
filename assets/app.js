@@ -1676,7 +1676,8 @@ function simulate(plan, returnPct) {
   for (let y = 0; y < years; y++) {
     const grow = (1 + inf) ** y;
     const spend = spendMo * 12 * grow;
-    const income = (plan.partTime || 0) * 12 * grow + (plan.age && plan.age + y >= 65 ? (plan.cpfPayout || 0) * 12 : 0);
+    // Both entered in today's dollars, so they keep pace with inflation like spending.
+    const income = ((plan.partTime || 0) + (plan.age && plan.age + y >= 65 ? plan.cpfPayout || 0 : 0)) * 12 * grow;
     const due = loanBal > 0 ? Math.min(instalment * 12, loanBal * (1 + loanRate)) : 0;
     loanBal = Math.max(0, loanBal * (1 + loanRate) - due);
     if (loanBal === 0 && due > 0 && loanOffYear == null) loanOffYear = y + 1;
@@ -1779,6 +1780,7 @@ function renderRetire({ table = true } = {}) {
       base.loanOffYear ? h("li", {}, `At today's instalment and rate, the loan is paid off in about ${base.loanOffYear} years. The rate can change after your lock-in ends${loan?.lockInEnds ? ` (${loan.lockInEnds})` : ""}.`) : null,
       rsuNote(plan),
       passiveMo ? h("li", {}, `Your dividends and interest (about ${money(passiveMo)}/mo over the last 12 months) are counted inside the ${plan.returnPct}% expected return, not as extra income. Spending them or selling the same amount has the same effect on the plan. They do mean about ${pct(passiveMo / base.spendMo, 0)} of your semi-retired spending is covered without selling anything, which helps when markets are down.`) : null,
+      !plan.cpfPayout ? h("li", {}, "CPF LIFE payouts from 65 aren't included yet (set to S$0). Get an estimate from the CPF LIFE estimator on cpf.gov.sg and enter it in today's dollars. The estimator shows future dollars; divide by about 2.1 for 30 years of 2.5% inflation.") : null,
       h("li", {}, "Part-time work helps twice: it covers spending and adds CPF contributions to your OA, keeping the loan on CPF for longer."),
       group ? h("li", {}, "Group term cover is usually tied to your employer and ends when you leave, so it's set to S$0 here.") : null,
       h("li", {}, "Insurance: term life mainly protects people who depend on your income and any co-borrower on the loan. Critical illness pays a lump sum if you're diagnosed, which can matter more without a salary or sick leave. Cancelling is hard to undo: buying cover again later costs more and may exclude conditions. Worth reviewing with a licensed adviser before dropping either."),
@@ -1815,7 +1817,7 @@ function renderRetire({ table = true } = {}) {
     field("Inflation (%/yr)", "inflationPct"),
     field("Cash buffer kept aside (S$)", "buffer"),
     field("Your age (optional)", "age", { hint: "e.g. 35", int: true }),
-    field("CPF payout from 65 (S$/mo)", "cpfPayout", { hint: "check CPF LIFE estimator" }),
+    field("CPF LIFE from 65 (S$/mo, today's dollars)", "cpfPayout", { hint: "CPF LIFE estimator" }),
     field("Years to plan for (if no age)", "horizon", { int: true }),
     field("RSU growth (%/yr)", "rsuGrowthPct"),
     field("Tax on RSU when sold (%)", "rsuTaxPct", { hint: "15" }),
