@@ -1622,7 +1622,7 @@ const INSURANCE_DEFAULTS = [
   ["Dad's health insurance", 1150],
 ];
 
-const PLAN_DEFAULTS = { partTime: 0, cpfInflow: 0, returnPct: 5, inflationPct: 2.5, age: 35, horizon: 40, cpfPayout: 0, includeRsu: true, buffer: 30000, rsuGrowthPct: 5, rsuLeaverPrice: true };
+const PLAN_DEFAULTS = { partTime: 0, partTimeScenario: 1000, cpfInflow: 0, returnPct: 5, inflationPct: 2.5, age: 35, horizon: 40, cpfPayout: 0, includeRsu: true, buffer: 30000, rsuGrowthPct: 5, rsuLeaverPrice: true };
 
 function defaultPlan() {
   const b = state.data.budgets.at(-1);
@@ -1733,6 +1733,11 @@ function renderRetire({ table = true } = {}) {
   };
   const base = simulate(plan, plan.returnPct);
   const low = simulate(plan, plan.returnPct - 2);
+  // Comparison: the same plan with part-time income added on top.
+  const pt = plan.partTimeScenario || 0;
+  const withPt = { ...plan, partTime: (plan.partTime || 0) + pt };
+  const ptBase = pt ? simulate(withPt, plan.returnPct) : null;
+  const ptLow = pt ? simulate(withPt, plan.returnPct - 2) : null;
   const nowMo = sum(plan.items.map((it) => (it.keep ? (it.per === "yr" ? it.now / 12 : it.now) : 0)));
   const yr1 = base.rows[0]?.need ?? 0;
   const afterOa = base.oaOutYear != null ? base.spendMo * 12 + base.instalment * 12 - (plan.partTime || 0) * 12 : null;
@@ -1748,24 +1753,28 @@ function renderRetire({ table = true } = {}) {
     tile("Draw while CPF OA pays the loan", pct(rate(Math.max(0, yr1))), `${money(Math.max(0, yr1))}/yr · 4% is a common rule of thumb`, rateCls(rate(yr1))),
     afterOa != null ? tile("Draw once the loan moves to cash", pct(rate(afterOa)), `${money(afterOa)}/yr from year ${base.oaOutYear + 1}`, rateCls(rate(afterOa))) : "",
     tile(`At ${plan.returnPct}% return`, lastsText(base), `At ${plan.returnPct - 2}%: ${lastsText(low).toLowerCase()}`, base.depletedAt ? "warn" : ""),
+    ptBase ? tile(`With +${money(pt)}/mo part-time`, lastsText(ptBase), `At ${plan.returnPct - 2}%: ${lastsText(ptLow).toLowerCase()}`, ptBase.depletedAt ? "warn" : "") : "",
     tile("Part-time income for a 4% draw", `${money(needFor4)}/mo`, "after the loan moves to cash"),
     passiveMo ? tile("Dividends & interest you receive", `${money(passiveMo)}/mo`, `covers ${pct(passiveMo / base.spendMo, 0)} of semi-retired spending · already part of the ${plan.returnPct}% return`) : "",
   );
 
   const labels = base.rows.map((r) => (plan.age ? `Age ${plan.age + r.y + 1}` : `Year ${r.y + 1}`));
-  $("#rt-chart-sub").textContent = `Invested money in today's dollars, after spending and loan payments. ${plan.returnPct}% vs ${plan.returnPct - 2}% yearly return, ${plan.inflationPct}% inflation.`;
-  const s1 = cssVar("--s1"), s2 = cssVar("--s2");
-  const opts = baseOptions();
+  $("#rt-chart-sub").textContent = `Invested money in today's dollars, after spending and loan payments. ${plan.returnPct}% vs ${plan.returnPct - 2}% yearly return, ${plan.inflationPct}% inflation${pt ? `, with and without ${money(pt)}/mo part-time income` : ""}.`;
+  const [c1, c2, c3, c4] = ["--s1", "--s2", "--s3", "--s4"].map(cssVar);
+  const line = (label, sim, color) => ({ label, data: sim.rows.map((r) => r.real), borderColor: color, _key: color, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.2, fill: false });
+  const ptLabel = plan.partTime ? `+${money(pt)} part-time` : `${money(pt)}/mo part-time`;
+  const baseLabel = plan.partTime ? `${money(plan.partTime)}/mo part-time` : "No part-time";
   drawChart("chart-retire", {
     type: "line",
     data: {
       labels,
       datasets: [
-        { label: `${plan.returnPct}% return`, data: base.rows.map((r) => r.real), borderColor: s1, _key: s1, backgroundColor: alpha(s1, 0.1), fill: true, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.2 },
-        { label: `${plan.returnPct - 2}% return`, data: low.rows.map((r) => r.real), borderColor: s2, _key: s2, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.2 },
+        ...(ptBase ? [line(`${ptLabel} · ${plan.returnPct}%`, ptBase, c3), line(`${ptLabel} · ${plan.returnPct - 2}%`, ptLow, c4)] : []),
+        line(`${baseLabel} · ${plan.returnPct}%`, base, c1),
+        line(`${baseLabel} · ${plan.returnPct - 2}%`, low, c2),
       ],
     },
-    options: opts,
+    options: baseOptions(),
   });
 
   const loan = (state.data.loans || [])[0];
@@ -1812,6 +1821,7 @@ function renderRetire({ table = true } = {}) {
     );
   $("#rt-assumptions").replaceChildren(
     field("Part-time take-home (S$/mo)", "partTime", { hint: "0" }),
+    field("Part-time scenario to compare (S$/mo)", "partTimeScenario", { hint: "1000" }),
     field("CPF OA from part-time (S$/mo)", "cpfInflow", { hint: "0" }),
     field("Expected return (%/yr)", "returnPct"),
     field("Inflation (%/yr)", "inflationPct"),
