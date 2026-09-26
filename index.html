@@ -45,6 +45,7 @@
       <nav class="tabs" role="tablist">
         <button role="tab" class="tab" data-tab="portfolio" aria-selected="true">Portfolio</button>
         <button role="tab" class="tab" data-tab="cashflow" aria-selected="false">Monthly cash flow</button>
+        <button role="tab" class="tab" data-tab="retire" aria-selected="false">Semi-retire</button>
       </nav>
       <div class="actions">
         <button id="sync-status" class="sync" type="button" title="Sync status"></button>
@@ -70,12 +71,13 @@
 
         <div class="hero-row">
           <div class="hero card">
-            <div class="label">Net worth · <span id="hero-month"></span></div>
+            <div class="label">Investments &amp; savings · <span id="hero-month"></span></div>
             <div class="hero-value" id="hero-value"></div>
             <div class="deltas">
               <span id="hero-mom"></span>
               <span id="hero-yoy"></span>
             </div>
+            <div class="full-nw" id="hero-full"></div>
           </div>
           <div class="tiles" id="tiles"></div>
         </div>
@@ -156,6 +158,43 @@
           </div>
           <div class="table-wrap"><table id="history" class="table"></table></div>
           <button id="history-more" class="btn ghost full" type="button">Show all months</button>
+        </div>
+      </section>
+
+      <!-- ============ SEMI-RETIRE TAB ============ -->
+      <section id="tab-retire" class="tabpanel" role="tabpanel" hidden>
+        <div class="card disclaimer">
+          <b>A planning calculator, not advice.</b>
+          <span class="muted">It runs your numbers under simple assumptions (steady returns, flat inflation, today's dollars). It can't tell you whether to retire or which insurance to keep. For that, speak to a licensed financial adviser.</span>
+        </div>
+        <div class="tiles wide" id="rt-tiles"></div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Can your investments carry you?</h2>
+              <p class="muted small" id="rt-chart-sub"></p>
+            </div>
+          </div>
+          <div class="chart tall"><canvas id="chart-retire" aria-label="Projected investments in semi-retirement"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h2>Assumptions</h2><p class="muted small">Edit anything; it saves with your data.</p></div></div>
+            <div id="rt-assumptions" class="field-grid"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>What it means</h2></div></div>
+            <div id="rt-notes" class="rt-notes"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Monthly spending: now vs semi-retired</h2>
+              <p class="muted small">Starting scenario based on your plan, with travel, food and allowances cut. Annual items (insurance, travel) are spread per month. Untick to drop an item.</p>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="rt-spend" class="table form-table rt-table"></table></div>
         </div>
       </section>
 

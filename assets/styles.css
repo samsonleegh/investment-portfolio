@@ -191,6 +191,13 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
 .loan-block + .loan-block { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--grid); }
 .loan-table { margin-top: 12px; }
 .loan-edit { border: 1px solid var(--border); border-radius: 10px; padding: 4px 12px 10px; margin-bottom: 10px; }
+.full-nw { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--grid); font-size: 14px; }
+.full-nw b { font-size: 18px; margin-left: 4px; }
+.disclaimer { display: grid; gap: 4px; font-size: 13px; background: var(--surface-2); }
+.rt-notes ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 13.5px; color: var(--ink-2); }
+.rt-table input { max-width: 120px; margin-left: auto; display: block; }
+.rt-table tr.dropped td { opacity: 0.45; }
+.rt-table td:first-child { width: 28px; }
 .chart { position: relative; height: 280px; }
 .chart.tall { height: 360px; }
 
