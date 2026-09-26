@@ -1,0 +1,3351 @@
+{
+ "version": 1,
+ "currency": "SGD",
+ "updatedAt": "2026-09-26T02:46:15+00:00",
+ "assets": [
+  {
+   "id": "ibkr",
+   "name": "IBKR (all funds)",
+   "costTracked": true,
+   "group": "IBKR",
+   "archived": true
+  },
+  {
+   "id": "iwda",
+   "name": "IWDA · MSCI World",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "qqqm",
+   "name": "QQQM · Nasdaq 100",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "slv",
+   "name": "SLV · Silver",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "gld",
+   "name": "GLD · Gold",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "gldm",
+   "name": "GLDM · Gold mini",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "nlr",
+   "name": "NLR · Uranium & nuclear",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "itps",
+   "name": "ITPS · US TIPS",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "xyld",
+   "name": "XYLD · Covered call",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "elfy",
+   "name": "ELFY · Electrification",
+   "costTracked": true,
+   "group": "IBKR"
+  },
+  {
+   "id": "ibkr_cash",
+   "name": "IBKR cash",
+   "costTracked": false,
+   "group": "IBKR"
+  },
+  {
+   "id": "sti",
+   "name": "STI ETF",
+   "costTracked": true,
+   "dca": 1250
+  },
+  {
+   "id": "rsu",
+   "name": "TikTok RSU",
+   "costTracked": false,
+   "valuation": "units",
+   "factor": 0.85
+  },
+  {
+   "id": "syfe_income",
+   "name": "SYFE Income+",
+   "costTracked": true,
+   "dca": 1000
+  },
+  {
+   "id": "reit",
+   "name": "Nikko AM REIT ETF",
+   "costTracked": true,
+   "dca": 1250
+  },
+  {
+   "id": "cash",
+   "name": "Cash / SYFE Cash+",
+   "costTracked": false
+  },
+  {
+   "id": "hstech",
+   "name": "HSI-Tech ETF",
+   "costTracked": true,
+   "dca": 1200
+  },
+  {
+   "id": "crypto",
+   "name": "Crypto",
+   "costTracked": true,
+   "dca": 500
+  },
+  {
+   "id": "eu_etf",
+   "name": "EU ETF",
+   "costTracked": true,
+   "dca": 300
+  },
+  {
+   "id": "fs",
+   "name": "Funding Societies",
+   "costTracked": false,
+   "archived": true
+  }
+ ],
+ "passiveTypes": [
+  {
+   "id": "sti_div",
+   "name": "STI ETF dividends"
+  },
+  {
+   "id": "reit_div",
+   "name": "REIT dividends"
+  },
+  {
+   "id": "php_reit_div",
+   "name": "Phillip REIT dividends"
+  },
+  {
+   "id": "bond_div",
+   "name": "SYFE Income+ payout"
+  },
+  {
+   "id": "cash_interest",
+   "name": "Cash returns"
+  }
+ ],
+ "months": [
+  {
+   "month": "2016-09",
+   "values": {
+    "cash": 4057.8
+   },
+   "invested": {},
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2016-10",
+   "values": {
+    "sti": 196.31,
+    "cash": 5438.68
+   },
+   "invested": {
+    "sti": 200.0
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2016-11",
+   "values": {
+    "sti": 392.62,
+    "cash": 7117.28
+   },
+   "invested": {
+    "sti": 400.0
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2016-12",
+   "values": {
+    "sti": 599.94,
+    "cash": 7533.51
+   },
+   "invested": {
+    "sti": 600.0
+   },
+   "passive": {},
+   "note": "Bangkok: 1150"
+  },
+  {
+   "month": "2017-01",
+   "values": {
+    "sti": 1013.7,
+    "cash": 8571.67
+   },
+   "invested": {
+    "sti": 1000.0
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2017-02",
+   "values": {
+    "sti": 1429.67,
+    "cash": 9897.18
+   },
+   "invested": {
+    "sti": 1400.0
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2017-03",
+   "values": {
+    "sti": 1848.28,
+    "cash": 11579.99
+   },
+   "invested": {
+    "sti": 1800.0
+   },
+   "passive": {},
+   "note": "Yogja: 550\nBonus: 2121"
+  },
+  {
+   "month": "2017-04",
+   "values": {
+    "sti": 2224.0,
+    "cash": 11675.63
+   },
+   "invested": {
+    "sti": 2200.0
+   },
+   "passive": {},
+   "note": "Japan tics + weddings: 1264"
+  },
+  {
+   "month": "2017-05",
+   "values": {
+    "sti": 2699.16,
+    "cash": 12116.23
+   },
+   "invested": {
+    "sti": 2600.0
+   },
+   "passive": {
+    "php_reit_div": 21.6
+   },
+   "note": "Japan: 800\nPhp REIT"
+  },
+  {
+   "month": "2017-06",
+   "values": {
+    "sti": 3086.82,
+    "reit": 2134.0,
+    "cash": 12178.34
+   },
+   "invested": {
+    "sti": 3000.0,
+    "reit": 2136.0
+   },
+   "passive": {
+    "sti_div": 21.5
+   },
+   "note": "CAI photo: 150\nSTI 931 units"
+  },
+  {
+   "month": "2017-07",
+   "values": {
+    "sti": 3490.0,
+    "syfe_income": 298.5,
+    "reit": 2142.0,
+    "cash": 13429.05
+   },
+   "invested": {
+    "sti": 3400.0,
+    "syfe_income": 300.0,
+    "reit": 2136.0
+   },
+   "passive": {},
+   "note": "Insurance: 460\nLeave Reim: 908.20"
+  },
+  {
+   "month": "2017-08",
+   "values": {
+    "sti": 3927.33,
+    "syfe_income": 596.1,
+    "reit": 2167.8,
+    "cash": 14623.41
+   },
+   "invested": {
+    "sti": 3800.0,
+    "syfe_income": 600.0,
+    "reit": 2136.0
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2017-09",
+   "values": {
+    "sti": 4277.9,
+    "syfe_income": 894.88,
+    "reit": 3238.6,
+    "cash": 14013.57
+   },
+   "invested": {
+    "sti": 4200.0,
+    "syfe_income": 900.0,
+    "reit": 3208.8
+   },
+   "passive": {},
+   "note": "Insurance: 786"
+  },
+  {
+   "month": "2017-10",
+   "values": {
+    "sti": 4845.01,
+    "syfe_income": 1583.74,
+    "reit": 3169.0,
+    "cash": 14669.0
+   },
+   "invested": {
+    "sti": 4600.0,
+    "syfe_income": 1600.0,
+    "reit": 3208.8
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2017-11",
+   "values": {
+    "sti": 5240.89,
+    "syfe_income": 2279.41,
+    "reit": 3269.4,
+    "cash": 18489.37
+   },
+   "invested": {
+    "sti": 5000.0,
+    "syfe_income": 2300.0,
+    "reit": 3208.8
+   },
+   "passive": {},
+   "note": "Insur Reimbu: 786 / CTC For pay: 1377 / CTC Bonus: 1000"
+  },
+  {
+   "month": "2017-12",
+   "values": {
+    "sti": 5711.82,
+    "syfe_income": 2984.56,
+    "reit": 4424.0,
+    "cash": 18397.42
+   },
+   "invested": {
+    "sti": 5400.0,
+    "syfe_income": 3000.0,
+    "reit": 4263.95
+   },
+   "passive": {},
+   "note": "Vietnam: 700 / Royce Reim: 124.5\nHoliday Reimbu: 140 / DIY Insur Reimbu: 222.2 / Crypto Earnings: 568"
+  },
+  {
+   "month": "2018-01",
+   "values": {
+    "sti": 5884.67,
+    "syfe_income": 2882.71,
+    "reit": 4235.1,
+    "cash": 19177.08
+   },
+   "invested": {
+    "sti": 5400.0,
+    "syfe_income": 3000.0,
+    "reit": 4263.95
+   },
+   "passive": {
+    "sti_div": 97.0,
+    "reit_div": 21.0,
+    "bond_div": 66.0
+   },
+   "note": "STI\nABF\nNikko REIT"
+  },
+  {
+   "month": "2018-02",
+   "values": {
+    "sti": 6215.97,
+    "syfe_income": 3359.4,
+    "reit": 4235.1,
+    "cash": 20400.33
+   },
+   "invested": {
+    "sti": 5900.0,
+    "syfe_income": 3500.0,
+    "reit": 4263.95
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2018-03",
+   "values": {
+    "sti": 6830.08,
+    "syfe_income": 3857.97,
+    "reit": 5305.0,
+    "cash": 17870.92,
+    "ibkr": 1539.74
+   },
+   "invested": {
+    "sti": 6400.0,
+    "syfe_income": 4000.0,
+    "reit": 5369.95,
+    "ibkr": 1446.72
+   },
+   "passive": {},
+   "note": "Prop Tax: 79.8 / Dad Heal Insura: 350 / Royce Farewell: 100 / Monitor: 250 / Hakim's baby: 100"
+  },
+  {
+   "month": "2018-04",
+   "values": {
+    "sti": 7516.17,
+    "syfe_income": 4357.71,
+    "reit": 5252.6,
+    "cash": 18036.87,
+    "ibkr": 1539.74
+   },
+   "invested": {
+    "sti": 6900.0,
+    "syfe_income": 4500.0,
+    "reit": 5369.95,
+    "ibkr": 1423.52
+   },
+   "passive": {},
+   "note": "M1 Set-up: 82 / Mum's petrol: 137.94 / Sister exams: 300 / income tax: 546.71"
+  },
+  {
+   "month": "2018-05",
+   "values": {
+    "sti": 7960.71,
+    "syfe_income": 4818.1,
+    "reit": 5297.7,
+    "cash": 16303.48,
+    "ibkr": 1539.74
+   },
+   "invested": {
+    "sti": 7400.0,
+    "syfe_income": 5000.0,
+    "reit": 5369.95,
+    "ibkr": 1473.72
+   },
+   "passive": {},
+   "note": "Siter exam re-take: 100 / General Assembly: 3250 / Sister exam: 150"
+  },
+  {
+   "month": "2018-06",
+   "values": {
+    "sti": 7841.79,
+    "syfe_income": 5348.65,
+    "reit": 5283.2,
+    "cash": 16600.18,
+    "ibkr": 1539.74
+   },
+   "invested": {
+    "sti": 7900.0,
+    "syfe_income": 5500.0,
+    "reit": 5369.95,
+    "ibkr": 1496.83
+   },
+   "passive": {
+    "php_reit_div": 39.7
+   },
+   "note": "Php REIT"
+  },
+  {
+   "month": "2018-07",
+   "values": {
+    "sti": 8266.42,
+    "syfe_income": 5885.98,
+    "reit": 5442.9,
+    "cash": 11569.96,
+    "ibkr": 3032.63
+   },
+   "invested": {
+    "sti": 8400.0,
+    "syfe_income": 6000.0,
+    "reit": 5369.95,
+    "ibkr": 2984.38
+   },
+   "passive": {
+    "sti_div": 116.4,
+    "reit_div": 30.3
+   },
+   "note": "hospital insurance: 400 / SOMPO acc insur: 170\nSTI\nNikko REIT"
+  },
+  {
+   "month": "2018-08",
+   "values": {
+    "sti": 8806.3,
+    "syfe_income": 6417.3,
+    "reit": 5500.1,
+    "cash": 5159.62,
+    "ibkr": 3032.63
+   },
+   "invested": {
+    "sti": 8900.0,
+    "syfe_income": 6500.0,
+    "reit": 5369.95,
+    "ibkr": 3093.38
+   },
+   "passive": {},
+   "note": "ga fees: 3250 / critical/accid insur: 2188 / zhi han wedding: 80 / allowance: 800\npro-rated pay Aug: 1,843.35"
+  },
+  {
+   "month": "2018-09",
+   "values": {
+    "sti": 9383.65,
+    "syfe_income": 6869.72,
+    "reit": 5259.8,
+    "cash": 1795.18,
+    "ibkr": 4531.52
+   },
+   "invested": {
+    "sti": 9400.0,
+    "syfe_income": 7000.0,
+    "reit": 5369.95,
+    "ibkr": 4590.69
+   },
+   "passive": {},
+   "note": "crowning dental: 1000 / BKK flight + hotel: 300 / Mum car fine: 50 / cai angels treat: 150 / jav wedding: 80"
+  },
+  {
+   "month": "2018-10",
+   "values": {
+    "sti": 9315.33,
+    "syfe_income": 7331.43,
+    "reit": 5209.3,
+    "cash": 2464.06,
+    "ibkr": 4531.52
+   },
+   "invested": {
+    "sti": 9900.0,
+    "syfe_income": 7500.0,
+    "reit": 5369.95,
+    "ibkr": 4410.18
+   },
+   "passive": {},
+   "note": "Bangkok: 800"
+  },
+  {
+   "month": "2018-11",
+   "values": {
+    "sti": 9940.7,
+    "syfe_income": 7951.1,
+    "reit": 5336.8,
+    "cash": 2695.53,
+    "ibkr": 5529.25
+   },
+   "invested": {
+    "sti": 10400.0,
+    "syfe_income": 8000.0,
+    "reit": 5369.95,
+    "ibkr": 5034.0
+   },
+   "passive": {
+    "reit_div": 35.28
+   },
+   "note": "Hyuni & me flights: 377.1 / own flights,  accom: 365.55 / tcm: 100 / house proc insur: 289.64 / specs: 63 / shoes: 110\nGST rebate: 300 / IPPT: 200\nNikko REIT"
+  },
+  {
+   "month": "2018-12",
+   "values": {
+    "sti": 10289.11,
+    "syfe_income": 8553.53,
+    "reit": 5412.4,
+    "cash": 1934.44,
+    "ibkr": 5995.05
+   },
+   "invested": {
+    "sti": 10900.0,
+    "syfe_income": 8500.0,
+    "reit": 5369.95,
+    "ibkr": 5339.0
+   },
+   "passive": {},
+   "note": "sister tooth extract: 500 / bkk pim: 300"
+  },
+  {
+   "month": "2019-01",
+   "values": {
+    "sti": 11133.88,
+    "syfe_income": 8849.88,
+    "reit": 5447.9,
+    "cash": 2857.0,
+    "ibkr": 6208.61
+   },
+   "invested": {
+    "sti": 11400.0,
+    "syfe_income": 9000.0,
+    "reit": 5369.95,
+    "ibkr": 6498.38
+   },
+   "passive": {
+    "sti_div": 192.89,
+    "php_reit_div": 41.96,
+    "bond_div": 194.24
+   },
+   "note": "STI ETF\nABF ETF\nPhilip REIT"
+  },
+  {
+   "month": "2019-02",
+   "values": {
+    "sti": 11998.24,
+    "syfe_income": 9599.32,
+    "reit": 5726.2,
+    "cash": 3108.14,
+    "ibkr": 7077.75
+   },
+   "invested": {
+    "sti": 12100.0,
+    "syfe_income": 9700.0,
+    "reit": 5369.95,
+    "ibkr": 7023.02
+   },
+   "passive": {
+    "reit_div": 40.0
+   },
+   "note": "Dad's bed: 125 / bonus treat: 100 / Malaysia: 100 / Hualien Hotel: 261.24 / income tax property tax: 81.4\nNikko REIT"
+  },
+  {
+   "month": "2019-03",
+   "values": {
+    "sti": 12272.63,
+    "syfe_income": 10160.46,
+    "reit": 5907.7,
+    "cash": 6394.93,
+    "ibkr": 7768.09
+   },
+   "invested": {
+    "sti": 12600.0,
+    "syfe_income": 10200.0,
+    "reit": 5369.95,
+    "ibkr": 7557.93
+   },
+   "passive": {},
+   "note": "root canal: 350\nbonus: 3,897.50"
+  },
+  {
+   "month": "2019-04",
+   "values": {
+    "sti": 13359.61,
+    "syfe_income": 10625.26,
+    "reit": 6857.6,
+    "cash": 5817.35,
+    "fs": 500.0,
+    "ibkr": 8229.79
+   },
+   "invested": {
+    "sti": 13100.0,
+    "syfe_income": 10700.0,
+    "reit": 6393.33,
+    "ibkr": 8031.02
+   },
+   "passive": {},
+   "note": "taiwan travel: 500 / nic wedding: 168 / hakim baby showr: 50 / dad hosp + sis: 190\nagoda refund: 261.24"
+  },
+  {
+   "month": "2019-05",
+   "values": {
+    "sti": 12965.47,
+    "syfe_income": 10619.65,
+    "reit": 7709.8,
+    "cash": 2583.62,
+    "fs": 500.0,
+    "ibkr": 8811.2
+   },
+   "invested": {
+    "sti": 13100.0,
+    "syfe_income": 10700.0,
+    "reit": 6885.93,
+    "ibkr": 8574.07
+   },
+   "passive": {
+    "reit_div": 34.0
+   },
+   "note": "passport renewal: 70 / dad medical appts: 340 / HDB loan: 3720.36\nNikko REIT\n +1000 into jun cause forgot to invest"
+  },
+  {
+   "month": "2019-06",
+   "values": {
+    "sti": 14315.06,
+    "syfe_income": 11788.95,
+    "reit": 8192.0,
+    "cash": 2191.54,
+    "fs": 500.0,
+    "ibkr": 9344.46
+   },
+   "invested": {
+    "sti": 14100.0,
+    "syfe_income": 11700.0,
+    "reit": 7355.78,
+    "ibkr": 9054.8
+   },
+   "passive": {},
+   "note": "KL Trip: 370 / dad insurance: 663 / dental: 50 / dad medi review: 80"
+  },
+  {
+   "month": "2019-07",
+   "values": {
+    "sti": 14842.71,
+    "syfe_income": 12224.28,
+    "reit": 7975.6,
+    "cash": 3612.61,
+    "fs": 500.0,
+    "ibkr": 9126.79
+   },
+   "invested": {
+    "sti": 14500.0,
+    "syfe_income": 12100.0,
+    "reit": 7355.78,
+    "ibkr": 9054.8
+   },
+   "passive": {
+    "sti_div": 251.82,
+    "php_reit_div": 103.42
+   },
+   "note": "dad medical: 260 / sister laptop: 600 / kota tinngi hotel: 100 / jason wedding: 156 / dad allowance: 50 / zara clothes: 55 / cocoichiban treat: 100 / jb + hotel: 190 / kl flights: 122 / kl hotels: 172 / kota tinggi: 400 / accident insur: 177.51\nSTI ETIF\nPhilip REIT"
+  },
+  {
+   "month": "2019-08",
+   "values": {
+    "sti": 14323.34,
+    "syfe_income": 12473.26,
+    "reit": 8170.8,
+    "cash": 4900.0,
+    "fs": 500.0,
+    "ibkr": 9453.07
+   },
+   "invested": {
+    "sti": 14900.0,
+    "syfe_income": 12100.0,
+    "reit": 7355.78,
+    "ibkr": 9054.8
+   },
+   "passive": {
+    "reit_div": 37.27
+   },
+   "note": "sister school fees: 1500\nnikko REIT"
+  },
+  {
+   "month": "2019-09",
+   "values": {
+    "sti": 14736.85,
+    "syfe_income": 13127.89,
+    "reit": 9043.4,
+    "cash": 8567.7,
+    "fs": 500.0,
+    "ibkr": 10468.05
+   },
+   "invested": {
+    "sti": 15400.0,
+    "syfe_income": 12600.0,
+    "reit": 8381.32,
+    "ibkr": 10111.57
+   },
+   "passive": {},
+   "note": "health insur: 562.4 / critical insur: 1231.2 / wedding angbao: 410 / sports shoe: 140.4 / dental implant 1: 87.5 / alan dinner treat: 120 / taxy wedding: 230 / dad medical: 300"
+  },
+  {
+   "month": "2019-10",
+   "values": {
+    "sti": 15653.9,
+    "syfe_income": 13556.27,
+    "reit": 9126.3,
+    "cash": 12486.22,
+    "fs": 500.0,
+    "ibkr": 10807.03
+   },
+   "invested": {
+    "sti": 15900.0,
+    "syfe_income": 13100.0,
+    "reit": 8381.32,
+    "ibkr": 10111.57
+   },
+   "passive": {},
+   "note": "dad insure claim: 600 / insur reimbu grab: 1231"
+  },
+  {
+   "month": "2019-11",
+   "values": {
+    "sti": 16156.31,
+    "syfe_income": 14058.59,
+    "reit": 10066.6,
+    "cash": 13112.25,
+    "fs": 500.0,
+    "ibkr": 12168.92
+   },
+   "invested": {
+    "sti": 16400.0,
+    "syfe_income": 13600.0,
+    "reit": 9452.97,
+    "ibkr": 11133.5
+   },
+   "passive": {
+    "reit_div": 40.0
+   },
+   "note": "dad medical: 600 / hanoi: 1000\nict early pay from dec: 1,242.44\nNikko REITS"
+  },
+  {
+   "month": "2019-12",
+   "values": {
+    "sti": 16832.54,
+    "syfe_income": 14551.42,
+    "reit": 10029.0,
+    "cash": 14802.16,
+    "fs": 500.0,
+    "ibkr": 12384.48
+   },
+   "invested": {
+    "sti": 16900.0,
+    "syfe_income": 14100.0,
+    "reit": 9452.97,
+    "ibkr": 11133.5
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2020-01",
+   "values": {
+    "sti": 17107.51,
+    "syfe_income": 14847.3,
+    "reit": 11145.14,
+    "cash": 15473.96,
+    "fs": 500.0,
+    "ibkr": 13343.1
+   },
+   "invested": {
+    "sti": 17400.0,
+    "syfe_income": 14600.0,
+    "reit": 10455.46,
+    "ibkr": 12199.01
+   },
+   "passive": {
+    "sti_div": 304.04,
+    "php_reit_div": 77.83,
+    "bond_div": 304.4
+   },
+   "note": "dental: 1000\nABF Bond\nSTI ETF"
+  },
+  {
+   "month": "2020-02",
+   "values": {
+    "sti": 17504.87,
+    "syfe_income": 15475.26,
+    "reit": 10937.1,
+    "cash": 25413.55,
+    "fs": 500.0,
+    "ibkr": 13400.0
+   },
+   "invested": {
+    "sti": 18000.0,
+    "syfe_income": 15200.0,
+    "reit": 10455.46,
+    "ibkr": 12199.01
+   },
+   "passive": {
+    "reit_div": 56.97
+   },
+   "note": "HDB claim: 4500 / Dad insur claim: 800 / dental claim: 640\nNikko REIT"
+  },
+  {
+   "month": "2020-03",
+   "values": {
+    "sti": 13915.71,
+    "syfe_income": 16158.13,
+    "reit": 9027.0,
+    "cash": 29577.85,
+    "fs": 500.0,
+    "ibkr": 12463.66
+   },
+   "invested": {
+    "sti": 19000.0,
+    "syfe_income": 15700.0,
+    "reit": 11479.1,
+    "ibkr": 13185.27
+   },
+   "passive": {},
+   "note": "mum insurance: 1260\nbonus: 4947"
+  },
+  {
+   "month": "2020-04",
+   "values": {
+    "sti": 15973.55,
+    "syfe_income": 16962.51,
+    "reit": 10871.04,
+    "cash": 32671.36,
+    "fs": 500.0,
+    "ibkr": 14455.62
+   },
+   "invested": {
+    "sti": 20000.0,
+    "syfe_income": 16000.0,
+    "reit": 12505.93,
+    "ibkr": 14174.31
+   },
+   "passive": {},
+   "note": "grab reimburse mum insur: 1000"
+  },
+  {
+   "month": "2020-05",
+   "values": {
+    "sti": 16789.09,
+    "syfe_income": 17686.28,
+    "reit": 11700.96,
+    "cash": 31403.53,
+    "fs": 500.0,
+    "ibkr": 15396.49
+   },
+   "invested": {
+    "sti": 21000.0,
+    "syfe_income": 16300.0,
+    "reit": 12505.93,
+    "ibkr": 14174.31
+   },
+   "passive": {
+    "reit_div": 71.22
+   },
+   "note": "AISG App Fees: 267.5 / Macbook Pro 13: 2549 / Macbook Accessori: 70 / home allowance: 200"
+  },
+  {
+   "month": "2020-06",
+   "values": {
+    "sti": 19042.91,
+    "syfe_income": 17744.08,
+    "reit": 12844.2,
+    "cash": 27075.89,
+    "fs": 500.0,
+    "ibkr": 16636.53
+   },
+   "invested": {
+    "sti": 22000.0,
+    "syfe_income": 16600.0,
+    "reit": 13516.24,
+    "ibkr": 15154.33
+   },
+   "passive": {},
+   "note": "sompo pa insur: 177.62 / dad medical: 300 / grab bonus refund: 686.56 / mum allowance: 250 / prud medic insur: 622.4\ndad subsidy to return: 500"
+  },
+  {
+   "month": "2020-07",
+   "values": {
+    "sti": 18878.04,
+    "syfe_income": 18002.71,
+    "reit": 13413.6,
+    "cash": 21243.6,
+    "fs": 500.0,
+    "ibkr": 18199.71
+   },
+   "invested": {
+    "sti": 23000.0,
+    "syfe_income": 16600.0,
+    "reit": 14524.56,
+    "ibkr": 15154.33
+   },
+   "passive": {
+    "sti_div": 453.34,
+    "php_reit_div": 85.48
+   },
+   "note": "dad insurance: 1108.9 / term insurance: 662.96 / multi crit insur: 920"
+  },
+  {
+   "month": "2020-08",
+   "values": {
+    "sti": 19696.68,
+    "syfe_income": 17938.41,
+    "reit": 14770.1,
+    "cash": 21524.5,
+    "fs": 500.0,
+    "ibkr": 19758.2
+   },
+   "invested": {
+    "sti": 24000.0,
+    "syfe_income": 16600.0,
+    "reit": 15573.47,
+    "ibkr": 16170.39
+   },
+   "passive": {
+    "reit_div": 90.5
+   },
+   "note": ""
+  },
+  {
+   "month": "2020-09",
+   "values": {
+    "sti": 20091.62,
+    "syfe_income": 18197.44,
+    "reit": 15655.36,
+    "cash": 23134.34,
+    "fs": 500.0,
+    "ibkr": 18229.71
+   },
+   "invested": {
+    "sti": 24800.0,
+    "syfe_income": 16800.0,
+    "reit": 16628.96,
+    "ibkr": 16170.39
+   },
+   "passive": {},
+   "note": "sister health insur.: 95 / sister phone: 217.66\nemployee CPF refund: 1331"
+  },
+  {
+   "month": "2020-10",
+   "values": {
+    "sti": 20823.49,
+    "syfe_income": 18323.13,
+    "reit": 15934.11,
+    "cash": 23847.57,
+    "fs": 500.0,
+    "ibkr": 19737.0
+   },
+   "invested": {
+    "sti": 25800.0,
+    "syfe_income": 16800.0,
+    "reit": 17695.86,
+    "ibkr": 16170.39
+   },
+   "passive": {},
+   "note": "2000 for iwda"
+  },
+  {
+   "month": "2020-11",
+   "values": {
+    "sti": 25440.08,
+    "syfe_income": 18177.21,
+    "reit": 18361.38,
+    "cash": 25228.0,
+    "fs": 500.0,
+    "ibkr": 19737.0
+   },
+   "invested": {
+    "sti": 26800.0,
+    "syfe_income": 16800.0,
+    "reit": 18752.01,
+    "ibkr": 16170.39
+   },
+   "passive": {
+    "reit_div": 119.2
+   },
+   "note": "3000 for iwda\nposenet jingzhi: 600"
+  },
+  {
+   "month": "2020-12",
+   "values": {
+    "sti": 26298.24,
+    "syfe_income": 18219.11,
+    "reit": 19766.85,
+    "cash": 26540.0,
+    "fs": 500.0,
+    "ibkr": 20016.05
+   },
+   "invested": {
+    "sti": 27800.0,
+    "syfe_income": 16800.0,
+    "reit": 19816.85,
+    "ibkr": 16170.39
+   },
+   "passive": {},
+   "note": "4000 for iwda"
+  },
+  {
+   "month": "2021-01",
+   "values": {
+    "sti": 28138.06,
+    "syfe_income": 17638.34,
+    "reit": 20844.52,
+    "cash": 26119.67,
+    "crypto": 1517.0,
+    "fs": 350.0,
+    "ibkr": 20673.11
+   },
+   "invested": {
+    "sti": 28800.0,
+    "syfe_income": 16800.0,
+    "reit": 20837.25,
+    "ibkr": 16170.39
+   },
+   "passive": {
+    "sti_div": 494.24,
+    "php_reit_div": 97.5,
+    "bond_div": 352.51
+   },
+   "note": "180\nstaycation"
+  },
+  {
+   "month": "2021-02",
+   "values": {
+    "sti": 30368.45,
+    "rsu": 683.11,
+    "syfe_income": 17659.69,
+    "reit": 21841.25,
+    "cash": 20372.61,
+    "crypto": 3386.51,
+    "ibkr": 21361.89
+   },
+   "invested": {
+    "sti": 30300.0,
+    "syfe_income": 17200.0,
+    "reit": 21863.95,
+    "ibkr": 16170.39
+   },
+   "passive": {
+    "reit_div": 129.34
+   },
+   "note": "450 mum road tax\n350 mum insurance\n1000 cannabis stock\n2500 crypto"
+  },
+  {
+   "month": "2021-03",
+   "values": {
+    "sti": 32598.84,
+    "rsu": 602.0,
+    "syfe_income": 17681.04,
+    "reit": 23022.73,
+    "cash": 18622.61,
+    "hstech": 1011.05,
+    "crypto": 3354.76,
+    "ibkr": 23592.5
+   },
+   "invested": {
+    "sti": 31800.0,
+    "syfe_income": 17600.0,
+    "reit": 22900.79,
+    "hstech": 1015.2,
+    "ibkr": 18286.63
+   },
+   "passive": {},
+   "note": "320 boil operation"
+  },
+  {
+   "month": "2021-04",
+   "values": {
+    "sti": 33387.84,
+    "rsu": 392.16,
+    "syfe_income": 17932.6,
+    "reit": 23060.54,
+    "cash": 18355.8,
+    "hstech": 2000.0,
+    "crypto": 4593.38,
+    "ibkr": 24308.57
+   },
+   "invested": {
+    "sti": 32300.0,
+    "syfe_income": 17800.0,
+    "reit": 22900.79,
+    "hstech": 2079.0,
+    "ibkr": 18286.63
+   },
+   "passive": {},
+   "note": "100 boil polyclinic\n440 msg package"
+  },
+  {
+   "month": "2021-05",
+   "values": {
+    "sti": 34487.36,
+    "rsu": 434.07,
+    "syfe_income": 18327.5,
+    "reit": 23414.34,
+    "cash": 14281.72,
+    "hstech": 3042.9,
+    "crypto": 3466.96,
+    "ibkr": 26937.29
+   },
+   "invested": {
+    "sti": 32800.0,
+    "syfe_income": 18000.0,
+    "reit": 23400.79,
+    "hstech": 3153.0,
+    "ibkr": 20320.7
+   },
+   "passive": {
+    "reit_div": 165.72
+   },
+   "note": "5000 renovation"
+  },
+  {
+   "month": "2021-06",
+   "values": {
+    "sti": 33992.69,
+    "rsu": 416.51,
+    "syfe_income": 18483.47,
+    "reit": 24463.26,
+    "cash": 13345.37,
+    "hstech": 4082.04,
+    "crypto": 3276.21,
+    "ibkr": 27453.37
+   },
+   "invested": {
+    "sti": 33300.0,
+    "syfe_income": 18200.0,
+    "reit": 23900.79,
+    "hstech": 4163.8,
+    "ibkr": 20320.7
+   },
+   "passive": {},
+   "note": "920 critical\n100 toilet pipe\n2000 BTO deposit\n684 medical insura"
+  },
+  {
+   "month": "2021-07",
+   "values": {
+    "sti": 34794.99,
+    "rsu": 364.0,
+    "syfe_income": 18795.97,
+    "reit": 25006.75,
+    "cash": 13625.71,
+    "hstech": 4507.71,
+    "crypto": 3790.8,
+    "ibkr": 30306.99
+   },
+   "invested": {
+    "sti": 33800.0,
+    "syfe_income": 18400.0,
+    "reit": 24400.79,
+    "hstech": 5164.3,
+    "ibkr": 22439.95
+   },
+   "passive": {
+    "sti_div": 542.88,
+    "php_reit_div": 49.99,
+    "bond_div": 198.31
+   },
+   "note": "663 term plan\n200 rei birthday\n810 dad insurance"
+  },
+  {
+   "month": "2021-08",
+   "values": {
+    "sti": 35247.66,
+    "rsu": 351.81,
+    "syfe_income": 19057.49,
+    "reit": 25420.19,
+    "cash": 13753.19,
+    "hstech": 5483.4,
+    "crypto": 5149.3,
+    "ibkr": 30949.8
+   },
+   "invested": {
+    "sti": 34800.0,
+    "syfe_income": 18800.0,
+    "reit": 24900.79,
+    "hstech": 6163.1,
+    "ibkr": 22439.95
+   },
+   "passive": {
+    "reit_div": 174.45
+   },
+   "note": ""
+  },
+  {
+   "month": "2021-09",
+   "values": {
+    "sti": 35356.93,
+    "rsu": 296.11,
+    "syfe_income": 19034.61,
+    "reit": 24912.4,
+    "cash": 14686.34,
+    "hstech": 5934.74,
+    "crypto": 4481.39,
+    "ibkr": 31844.08
+   },
+   "invested": {
+    "sti": 35300.0,
+    "syfe_income": 19000.0,
+    "reit": 25600.79,
+    "hstech": 7167.6,
+    "ibkr": 24513.61
+   },
+   "passive": {},
+   "note": "440 massage"
+  },
+  {
+   "month": "2021-10",
+   "values": {
+    "sti": 37548.86,
+    "rsu": 285.22,
+    "syfe_income": 18862.51,
+    "reit": 26177.04,
+    "cash": 13544.06,
+    "hstech": 7127.0,
+    "crypto": 5290.87,
+    "ibkr": 33265.31
+   },
+   "invested": {
+    "sti": 35800.0,
+    "syfe_income": 19200.0,
+    "reit": 26100.79,
+    "hstech": 8164.0,
+    "ibkr": 24513.61
+   },
+   "passive": {},
+   "note": "3100 mum's car"
+  },
+  {
+   "month": "2021-11",
+   "values": {
+    "sti": 37764.78,
+    "rsu": 269.61,
+    "syfe_income": 19220.95,
+    "reit": 26405.87,
+    "cash": 15490.16,
+    "hstech": 7710.0,
+    "crypto": 4805.37,
+    "ibkr": 35426.87
+   },
+   "invested": {
+    "sti": 36300.0,
+    "syfe_income": 19400.0,
+    "reit": 26600.79,
+    "hstech": 9163.6,
+    "ibkr": 26431.58
+   },
+   "passive": {
+    "reit_div": 208.37
+   },
+   "note": "200 student loan\n300 kobo + treat\n100 alvin bai jin\n50 samuel bdae\nposenet jingzhi: 1000"
+  },
+  {
+   "month": "2021-12",
+   "values": {
+    "sti": 37818.32,
+    "rsu": 219.02,
+    "syfe_income": 19459.44,
+    "reit": 27214.15,
+    "cash": 15398.64,
+    "hstech": 8039.23,
+    "crypto": 4277.0,
+    "ibkr": 36232.06
+   },
+   "invested": {
+    "sti": 36800.0,
+    "syfe_income": 19600.0,
+    "reit": 27300.79,
+    "hstech": 10155.5,
+    "ibkr": 26431.58
+   },
+   "passive": {},
+   "note": "200 mum birthday\n300 cousin wedding\n160 intern + jh treat\n2000 KL trip"
+  },
+  {
+   "month": "2022-01",
+   "values": {
+    "sti": 39172.01,
+    "rsu": 172.64,
+    "syfe_income": 19324.89,
+    "reit": 25884.28,
+    "cash": 17441.51,
+    "hstech": 9148.88,
+    "crypto": 1948.7,
+    "ibkr": 35831.31
+   },
+   "invested": {
+    "sti": 37300.0,
+    "syfe_income": 19800.0,
+    "reit": 27800.79,
+    "hstech": 11159.9,
+    "ibkr": 28494.99
+   },
+   "passive": {
+    "sti_div": 585.73,
+    "php_reit_div": 149.5,
+    "bond_div": 206.64
+   },
+   "note": "288 + 188 parents angbao\nflexi benefit + angbao: 1732"
+  },
+  {
+   "month": "2022-02",
+   "values": {
+    "sti": 40861.72,
+    "rsu": 187.82,
+    "syfe_income": 19587.64,
+    "reit": 26766.6,
+    "cash": 19141.57,
+    "hstech": 9487.66,
+    "crypto": 1848.6,
+    "ibkr": 35134.8
+   },
+   "invested": {
+    "sti": 38400.0,
+    "syfe_income": 20200.0,
+    "reit": 28300.79,
+    "hstech": 12160.64,
+    "ibkr": 28494.99
+   },
+   "passive": {
+    "reit_div": 227.94
+   },
+   "note": "350 toilet repair"
+  },
+  {
+   "month": "2022-03",
+   "values": {
+    "sti": 42875.22,
+    "rsu": 235.43,
+    "syfe_income": 19057.26,
+    "reit": 28777.82,
+    "cash": 18671.58,
+    "hstech": 9534.96,
+    "crypto": 2387.32,
+    "ibkr": 37757.62
+   },
+   "invested": {
+    "sti": 38900.0,
+    "syfe_income": 20400.0,
+    "reit": 29000.79,
+    "hstech": 13165.55,
+    "ibkr": 30478.85
+   },
+   "passive": {},
+   "note": "160 dad medical\n280 sher jie ang bao\n191.24 bali flights"
+  },
+  {
+   "month": "2022-04",
+   "values": {
+    "sti": 43017.96,
+    "rsu": 171.05,
+    "syfe_income": 19072.97,
+    "reit": 29190.52,
+    "cash": 18297.3,
+    "hstech": 9226.58,
+    "crypto": 2387.32,
+    "ibkr": 36504.11
+   },
+   "invested": {
+    "sti": 39400.0,
+    "syfe_income": 20600.0,
+    "reit": 29700.79,
+    "ibkr": 30478.85
+   },
+   "passive": {},
+   "note": "88 swab test\n62.57 travel insurance\n150 JB\n73 dinner treat\n321 road tax mum\n800 bali"
+  },
+  {
+   "month": "2022-05",
+   "values": {
+    "sti": 42456.33,
+    "rsu": 30511.11,
+    "syfe_income": 19071.55,
+    "reit": 28901.26,
+    "cash": 36470.34,
+    "hstech": 11308.9,
+    "crypto": 2387.32,
+    "ibkr": 37560.86
+   },
+   "invested": {
+    "sti": 39900.0,
+    "syfe_income": 20800.0,
+    "reit": 30200.79,
+    "hstech": 14160.17,
+    "ibkr": 32826.95
+   },
+   "passive": {
+    "reit_div": 251.46
+   },
+   "note": "700 bali\n1500 mum\n500 samuel\n300 dad\n150 sister\n400 rei\nbonus: 20000"
+  },
+  {
+   "month": "2022-06",
+   "values": {
+    "sti": 40422.14,
+    "rsu": 30511.11,
+    "syfe_income": 19072.3,
+    "reit": 22136.26,
+    "cash": 36470.34,
+    "hstech": 11308.9,
+    "ibkr": 38268.15
+   },
+   "invested": {
+    "sti": 40500.0,
+    "syfe_income": 21200.0,
+    "reit": 30200.79,
+    "ibkr": 37582.26
+   },
+   "passive": {},
+   "note": "359 ergo chair\n315 portable monitor\n389 TV\n240 Bali flights\n340 portable bike\n700 KL trip\n(5000 IWDA + 5000 REITS)\nWFH reimbursement: 689"
+  },
+  {
+   "month": "2022-07",
+   "values": {
+    "sti": 41308.98,
+    "rsu": 30511.11,
+    "syfe_income": 19571.24,
+    "reit": 34670.72,
+    "cash": 20574.01,
+    "hstech": 11550.74,
+    "ibkr": 40399.22
+   },
+   "invested": {
+    "sti": 42000.0,
+    "syfe_income": 22100.0,
+    "reit": 36100.79,
+    "hstech": 15160.17,
+    "ibkr": 39968.55
+   },
+   "passive": {
+    "sti_div": 743.31,
+    "bond_div": 222.75
+   },
+   "note": "1583 critical + term protection\n769.8 health insurance\n800 mum car insurance\n810 dad health insurance"
+  },
+  {
+   "month": "2022-08",
+   "values": {
+    "sti": 44579.68,
+    "rsu": 30511.11,
+    "syfe_income": 20262.54,
+    "reit": 34069.32,
+    "cash": 24981.54,
+    "hstech": 10765.17,
+    "ibkr": 41292.49
+   },
+   "invested": {
+    "sti": 42900.0,
+    "syfe_income": 22600.0,
+    "reit": 37000.79,
+    "hstech": 16160.17,
+    "ibkr": 42280.6
+   },
+   "passive": {
+    "reit_div": 179.34,
+    "php_reit_div": 65.0
+   },
+   "note": "111 KL trip\n300 sean wedding\n150 birthday attempt"
+  },
+  {
+   "month": "2022-09",
+   "values": {
+    "rsu": 30511.11,
+    "sti": 46034.37,
+    "syfe_income": 20824.95,
+    "reit": 34164.32,
+    "cash": 23012.22,
+    "hstech": 11743.85,
+    "ibkr": 43348.69
+   },
+   "invested": {
+    "sti": 43800.0,
+    "syfe_income": 23100.0,
+    "reit": 37634.12,
+    "hstech": 17160.17,
+    "ibkr": 43070.0
+   },
+   "passive": {},
+   "note": "",
+   "estimated": [
+    "ibkr",
+    "sti",
+    "syfe_income",
+    "reit",
+    "cash",
+    "hstech"
+   ]
+  },
+  {
+   "month": "2022-10",
+   "values": {
+    "rsu": 30511.11,
+    "sti": 47489.07,
+    "syfe_income": 21387.35,
+    "reit": 34259.32,
+    "cash": 21042.91,
+    "hstech": 12722.54,
+    "ibkr": 45404.89
+   },
+   "invested": {
+    "sti": 44700.0,
+    "syfe_income": 23600.0,
+    "reit": 38267.46,
+    "hstech": 18160.17,
+    "ibkr": 43859.41
+   },
+   "passive": {},
+   "note": "",
+   "estimated": [
+    "ibkr",
+    "sti",
+    "syfe_income",
+    "reit",
+    "cash",
+    "hstech"
+   ]
+  },
+  {
+   "month": "2022-11",
+   "values": {
+    "sti": 48943.76,
+    "rsu": 30511.11,
+    "syfe_income": 21949.76,
+    "reit": 34354.32,
+    "cash": 19073.59,
+    "hstech": 13701.22,
+    "ibkr": 47461.09
+   },
+   "invested": {
+    "sti": 45600.0,
+    "syfe_income": 24100.0,
+    "reit": 38900.79,
+    "hstech": 19160.17,
+    "ibkr": 44648.81
+   },
+   "passive": {
+    "reit_div": 353.17
+   },
+   "note": ""
+  },
+  {
+   "month": "2022-12",
+   "values": {
+    "sti": 50344.73,
+    "rsu": 30511.11,
+    "syfe_income": 23143.18,
+    "reit": 35044.86,
+    "cash": 21757.41,
+    "hstech": 17952.17,
+    "ibkr": 47029.14
+   },
+   "invested": {
+    "sti": 46600.0,
+    "syfe_income": 24600.0,
+    "reit": 39900.79,
+    "hstech": 20160.17,
+    "ibkr": 44648.81
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2023-01",
+   "values": {
+    "sti": 51416.52,
+    "rsu": 30511.11,
+    "syfe_income": 23039.89,
+    "reit": 37197.2,
+    "cash": 27481.74,
+    "hstech": 17925.12,
+    "ibkr": 52007.79
+   },
+   "invested": {
+    "sti": 47600.0,
+    "syfe_income": 25100.0,
+    "reit": 40900.79,
+    "hstech": 21160.17,
+    "ibkr": 47781.25
+   },
+   "passive": {
+    "sti_div": 969.41,
+    "bond_div": 264.86
+   },
+   "note": "Bali trip: 1500"
+  },
+  {
+   "month": "2023-02",
+   "values": {
+    "sti": 50173.1,
+    "rsu": 30511.11,
+    "syfe_income": 22884.37,
+    "reit": 36859.24,
+    "cash": 22039.43,
+    "hstech": 17932.11,
+    "ibkr": 51593.93
+   },
+   "invested": {
+    "sti": 48600.0,
+    "syfe_income": 25600.0,
+    "reit": 42400.79,
+    "hstech": 22460.17,
+    "ibkr": 47781.25
+   },
+   "passive": {
+    "reit_div": 401.98,
+    "php_reit_div": 152.25
+   },
+   "note": "Taiwan trip: 3500"
+  },
+  {
+   "month": "2023-03",
+   "values": {
+    "sti": 50173.1,
+    "rsu": 30511.11,
+    "syfe_income": 22884.37,
+    "reit": 38392.24,
+    "cash": 22039.43,
+    "hstech": 17932.11,
+    "ibkr": 51593.93
+   },
+   "invested": {
+    "sti": 49755.0,
+    "syfe_income": 26100.0,
+    "reit": 43933.79,
+    "hstech": 23760.17,
+    "ibkr": 47781.25
+   },
+   "passive": {},
+   "note": "reinvest sti etf dividends +155\nreinveset reits dividends +133"
+  },
+  {
+   "month": "2023-04",
+   "values": {
+    "sti": 50173.1,
+    "rsu": 30511.11,
+    "syfe_income": 22884.37,
+    "reit": 39925.24,
+    "cash": 22039.43,
+    "hstech": 17932.11,
+    "ibkr": 51593.93
+   },
+   "invested": {
+    "sti": 50910.0,
+    "syfe_income": 26600.0,
+    "reit": 45466.79,
+    "hstech": 25060.17,
+    "ibkr": 47781.25
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2023-05",
+   "values": {
+    "sti": 56346.64,
+    "rsu": 47376.25,
+    "syfe_income": 25866.69,
+    "reit": 41706.99,
+    "cash": 38000.0,
+    "hstech": 23160.07,
+    "ibkr": 59776.72
+   },
+   "invested": {
+    "sti": 52065.0,
+    "syfe_income": 27100.0,
+    "reit": 46999.79,
+    "hstech": 26360.17,
+    "ibkr": 50868.68
+   },
+   "passive": {
+    "reit_div": 434.06
+   },
+   "note": ""
+  },
+  {
+   "month": "2023-06",
+   "values": {
+    "sti": 57072.52,
+    "rsu": 47371.51,
+    "syfe_income": 26146.21,
+    "reit": 42734.13,
+    "cash": 31077.66,
+    "hstech": 24044.55,
+    "crypto": 4238.31,
+    "eu_etf": 900.0,
+    "ibkr": 63731.69
+   },
+   "invested": {
+    "sti": 53220.0,
+    "syfe_income": 27500.0,
+    "reit": 48532.79,
+    "hstech": 27360.17,
+    "eu_etf": 900.0,
+    "ibkr": 53845.42
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2023-07",
+   "values": {
+    "sti": 59148.25,
+    "rsu": 47371.51,
+    "syfe_income": 26381.8,
+    "reit": 43156.86,
+    "cash": 30153.87,
+    "hstech": 26234.44,
+    "crypto": 4252.54,
+    "eu_etf": 1354.0,
+    "ibkr": 63529.01
+   },
+   "invested": {
+    "sti": 54375.0,
+    "syfe_income": 27900.0,
+    "reit": 50065.79,
+    "hstech": 28360.17,
+    "eu_etf": 1200.0,
+    "ibkr": 53845.42
+   },
+   "passive": {
+    "sti_div": 1194.18,
+    "bond_div": 236.72
+   },
+   "note": ""
+  },
+  {
+   "month": "2023-08",
+   "values": {
+    "sti": 58726.83,
+    "rsu": 47371.51,
+    "syfe_income": 26579.61,
+    "reit": 42032.47,
+    "cash": 32212.01,
+    "hstech": 25917.93,
+    "crypto": 3610.92,
+    "eu_etf": 1648.7,
+    "ibkr": 63918.12
+   },
+   "invested": {
+    "sti": 55530.0,
+    "syfe_income": 28300.0,
+    "reit": 51598.79,
+    "hstech": 29360.17,
+    "eu_etf": 1500.0
+   },
+   "passive": {
+    "reit_div": 512.94
+   },
+   "note": ""
+  },
+  {
+   "month": "2023-09",
+   "values": {
+    "sti": 58305.42,
+    "rsu": 52961.11,
+    "syfe_income": 26777.42,
+    "reit": 40908.08,
+    "cash": 34270.15,
+    "hstech": 25601.42,
+    "crypto": 2969.3,
+    "eu_etf": 1943.39,
+    "ibkr": 64307.22
+   },
+   "invested": {
+    "sti": 56685.0,
+    "syfe_income": 28700.0,
+    "reit": 53131.79,
+    "hstech": 30360.17,
+    "eu_etf": 1800.0,
+    "ibkr": 56851.2
+   },
+   "passive": {
+    "php_reit_div": 82.65
+   },
+   "note": "mum car repair: 2000"
+  },
+  {
+   "month": "2023-10",
+   "values": {
+    "sti": 57554.95,
+    "rsu": 52961.11,
+    "syfe_income": 26750.9,
+    "reit": 41763.32,
+    "cash": 29851.67,
+    "hstech": 25105.34,
+    "crypto": 3454.15,
+    "eu_etf": 2243.39,
+    "ibkr": 64103.78
+   },
+   "invested": {
+    "sti": 57840.0,
+    "syfe_income": 29100.0,
+    "reit": 54664.79,
+    "hstech": 31360.17,
+    "eu_etf": 2100.0,
+    "ibkr": 56851.2
+   },
+   "passive": {},
+   "note": ""
+  },
+  {
+   "month": "2023-11",
+   "values": {
+    "sti": 59716.51,
+    "rsu": 52961.11,
+    "syfe_income": 27803.28,
+    "reit": 45984.67,
+    "cash": 26570.84,
+    "hstech": 24787.07,
+    "crypto": 3853.76,
+    "eu_etf": 2642.35,
+    "ibkr": 68306.5
+   },
+   "invested": {
+    "sti": 58995.0,
+    "syfe_income": 29600.0,
+    "reit": 56197.79,
+    "hstech": 31860.17,
+    "eu_etf": 2400.0,
+    "ibkr": 59786.83
+   },
+   "passive": {
+    "reit_div": 600.21
+   },
+   "note": ""
+  },
+  {
+   "month": "2023-12",
+   "values": {
+    "sti": 61878.07,
+    "rsu": 52961.11,
+    "syfe_income": 28855.65,
+    "reit": 50206.02,
+    "cash": 23290.01,
+    "hstech": 24468.81,
+    "crypto": 4253.36,
+    "eu_etf": 3041.3,
+    "ibkr": 72509.22
+   },
+   "invested": {
+    "sti": 60150.0,
+    "syfe_income": 30100.0,
+    "reit": 57730.79,
+    "hstech": 32360.17,
+    "eu_etf": 2700.0,
+    "ibkr": 59786.83
+   },
+   "passive": {},
+   "note": "2688 flooring + 4000 CPF SA: 6688"
+  },
+  {
+   "month": "2024-01",
+   "values": {
+    "sti": 61573.97,
+    "rsu": 52961.11,
+    "syfe_income": 28934.22,
+    "reit": 48952.42,
+    "cash": 26351.08,
+    "hstech": 21844.74,
+    "crypto": 4531.38,
+    "eu_etf": 3630.93,
+    "ibkr": 77560.65
+   },
+   "invested": {
+    "sti": 61305.0,
+    "syfe_income": 30600.0,
+    "reit": 59263.79,
+    "hstech": 32860.18,
+    "eu_etf": 3000.0,
+    "ibkr": 62640.98
+   },
+   "passive": {
+    "sti_div": 1456.48,
+    "bond_div": 231.12
+   },
+   "note": ""
+  },
+  {
+   "month": "2024-02",
+   "values": {
+    "sti": 63055.04,
+    "rsu": 77116.78,
+    "syfe_income": 29219.34,
+    "reit": 49113.51,
+    "cash": 26870.65,
+    "hstech": 24819.85,
+    "crypto": 7363.62,
+    "eu_etf": 4395.14,
+    "ibkr": 81803.3
+   },
+   "invested": {
+    "sti": 62605.0,
+    "syfe_income": 31100.0,
+    "reit": 60963.79,
+    "hstech": 33360.18,
+    "eu_etf": 3300.0,
+    "ibkr": 62640.98
+   },
+   "passive": {
+    "reit_div": 606.51,
+    "php_reit_div": 160.5
+   },
+   "note": "1200 flooring + 800 mum insurance + 380 bro engagement angbao: 2380"
+  },
+  {
+   "month": "2024-03",
+   "values": {
+    "sti": 66079.06,
+    "syfe_income": 29462.95,
+    "rsu": 80534.24,
+    "reit": 50025.46,
+    "cash": 40146.28,
+    "hstech": 26766.4,
+    "crypto": 7228.76,
+    "eu_etf": 4506.93,
+    "ibkr": 81854.57
+   },
+   "invested": {
+    "sti": 64105.0,
+    "syfe_income": 31600.0,
+    "reit": 62463.79,
+    "hstech": 33610.18,
+    "eu_etf": 3600.0,
+    "ibkr": 63397.68
+   },
+   "passive": {},
+   "note": "",
+   "estimated": [
+    "ibkr",
+    "rsu",
+    "reit",
+    "cash",
+    "hstech",
+    "crypto",
+    "eu_etf"
+   ]
+  },
+  {
+   "month": "2024-04",
+   "values": {
+    "sti": 69103.08,
+    "rsu": 83951.69,
+    "syfe_income": 29706.57,
+    "reit": 50937.4,
+    "cash": 53421.9,
+    "hstech": 28712.96,
+    "crypto": 7093.9,
+    "eu_etf": 4618.72,
+    "ibkr": 81905.83
+   },
+   "invested": {
+    "sti": 65605.0,
+    "syfe_income": 32100.0,
+    "reit": 63963.79,
+    "hstech": 33860.18,
+    "eu_etf": 3900.0,
+    "ibkr": 64154.39
+   },
+   "passive": {},
+   "note": "taiwan: 2000 / top up SA: 4000",
+   "units": {
+    "rsu": 430.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-05",
+   "values": {
+    "sti": 71434.65,
+    "rsu": 83951.69,
+    "syfe_income": 30008.65,
+    "reit": 51996.2,
+    "cash": 53421.9,
+    "hstech": 28712.96,
+    "crypto": 7504.52,
+    "eu_etf": 4983.78,
+    "ibkr": 87615.68
+   },
+   "invested": {
+    "sti": 67105.0,
+    "syfe_income": 32100.0,
+    "reit": 65463.79,
+    "hstech": 34360.18,
+    "eu_etf": 4200.0,
+    "ibkr": 66167.19
+   },
+   "passive": {
+    "reit_div": 665.19
+   },
+   "note": "",
+   "units": {
+    "rsu": 430.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-06",
+   "values": {
+    "sti": 73766.22,
+    "rsu": 69308.96,
+    "syfe_income": 30310.72,
+    "reit": 53055.0,
+    "cash": 70079.99,
+    "hstech": 27036.31,
+    "crypto": 7915.14,
+    "eu_etf": 5348.84,
+    "ibkr": 93325.53
+   },
+   "invested": {
+    "sti": 68605.0,
+    "syfe_income": 32100.0,
+    "reit": 66963.79,
+    "hstech": 34860.18,
+    "eu_etf": 4500.0,
+    "ibkr": 68683.18
+   },
+   "passive": {},
+   "note": "top up SA: 4000\nRSU redeemed: 20000",
+   "units": {
+    "rsu": 355.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-07",
+   "values": {
+    "sti": 75569.59,
+    "rsu": 74385.11,
+    "syfe_income": 30839.41,
+    "reit": 57176.59,
+    "cash": 66575.45,
+    "hstech": 25908.58,
+    "crypto": 7017.47,
+    "eu_etf": 5392.84,
+    "ibkr": 92245.23
+   },
+   "invested": {
+    "sti": 70105.0,
+    "syfe_income": 32100.0,
+    "reit": 68463.79,
+    "hstech": 35360.18,
+    "eu_etf": 4800.0,
+    "ibkr": 71199.16
+   },
+   "passive": {
+    "sti_div": 1812.67,
+    "bond_div": 231.12
+   },
+   "note": "dad insurance, my insurance: 4000",
+   "units": {
+    "rsu": 381.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-08",
+   "values": {
+    "sti": 78269.65,
+    "rsu": 74385.11,
+    "syfe_income": 31098.12,
+    "reit": 61008.34,
+    "cash": 68634.42,
+    "hstech": 27155.3,
+    "crypto": 6897.01,
+    "eu_etf": 5765.2,
+    "ibkr": 100899.11
+   },
+   "invested": {
+    "sti": 71605.0,
+    "syfe_income": 32100.0,
+    "reit": 69963.79,
+    "hstech": 35860.18,
+    "eu_etf": 5100.0,
+    "ibkr": 73715.15
+   },
+   "passive": {
+    "reit_div": 714.55,
+    "php_reit_div": 80.0
+   },
+   "note": "",
+   "units": {
+    "rsu": 381.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-09",
+   "values": {
+    "sti": 83322.55,
+    "rsu": 77118.42,
+    "syfe_income": 31534.58,
+    "reit": 65522.03,
+    "cash": 65398.07,
+    "hstech": 33848.66,
+    "crypto": 7245.91,
+    "eu_etf": 6064.03,
+    "ibkr": 102733.4
+   },
+   "invested": {
+    "sti": 73105.0,
+    "syfe_income": 32100.0,
+    "reit": 71463.79,
+    "hstech": 35860.18,
+    "eu_etf": 5400.0,
+    "ibkr": 76301.68
+   },
+   "passive": {},
+   "note": "ring: 3600",
+   "units": {
+    "rsu": 395.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-10",
+   "values": {
+    "sti": 85137.52,
+    "rsu": 82194.57,
+    "syfe_income": 36166.73,
+    "reit": 63356.47,
+    "cash": 86245.64,
+    "hstech": 12725.5,
+    "crypto": 7900.88,
+    "eu_etf": 6387.52,
+    "ibkr": 104303.41
+   },
+   "invested": {
+    "sti": 74605.0,
+    "syfe_income": 37120.0,
+    "reit": 72963.79,
+    "hstech": 10836.48,
+    "eu_etf": 5700.0,
+    "ibkr": 79198.46
+   },
+   "passive": {
+    "bond_div": 21.45,
+    "cash_interest": 620.0
+   },
+   "note": "mum car insurance and road tax: 1350\nhongyi referral: 3300",
+   "units": {
+    "rsu": 421.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-11",
+   "values": {
+    "sti": 90795.32,
+    "rsu": 82194.57,
+    "syfe_income": 41127.97,
+    "reit": 57215.03,
+    "cash": 86390.86,
+    "hstech": 12003.02,
+    "crypto": 10000.0,
+    "eu_etf": 6802.0,
+    "ibkr": 115518.0
+   },
+   "invested": {
+    "sti": 76155.0,
+    "syfe_income": 42120.0,
+    "reit": 68254.01,
+    "hstech": 10836.48,
+    "eu_etf": 6000.0,
+    "ibkr": 81898.46
+   },
+   "passive": {
+    "reit_div": 770.03,
+    "bond_div": 108.08,
+    "cash_interest": 200.85
+   },
+   "note": "",
+   "units": {
+    "rsu": 421.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2024-12",
+   "values": {
+    "sti": 93624.68,
+    "rsu": 84537.4,
+    "syfe_income": 45821.06,
+    "reit": 57959.15,
+    "cash": 79625.37,
+    "hstech": 12528.46,
+    "crypto": 15000.0,
+    "eu_etf": 7043.09,
+    "ibkr": 116461.32
+   },
+   "invested": {
+    "sti": 77705.0,
+    "syfe_income": 47120.0,
+    "reit": 69804.01,
+    "hstech": 10836.48,
+    "crypto": 6750.0,
+    "eu_etf": 6300.0,
+    "ibkr": 84598.46
+   },
+   "passive": {
+    "bond_div": 73.8,
+    "cash_interest": 115.17
+   },
+   "note": "taiwan trip: 1500",
+   "units": {
+    "rsu": 433.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2025-01",
+   "values": {
+    "sti": 94221.3,
+    "rsu": 89613.55,
+    "syfe_income": 39994.31,
+    "reit": 58449.48,
+    "cash": 85725.78,
+    "hstech": 13037.48,
+    "crypto": 13755.46,
+    "eu_etf": 7367.07,
+    "ibkr": 122178.26
+   },
+   "invested": {
+    "sti": 79255.0,
+    "syfe_income": 42120.0,
+    "reit": 71354.01,
+    "hstech": 10836.48,
+    "crypto": 9430.0,
+    "eu_etf": 6600.0,
+    "ibkr": 87298.46
+   },
+   "passive": {
+    "sti_div": 2173.95,
+    "bond_div": 402.17,
+    "cash_interest": 116.11
+   },
+   "note": "cebu trip: 900\nabf bond 128 dividend before selling",
+   "units": {
+    "rsu": 459.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2025-02",
+   "values": {
+    "sti": 97246.95,
+    "rsu": 91956.39,
+    "syfe_income": 45682.0,
+    "reit": 59684.0,
+    "cash": 64702.1,
+    "hstech": 15812.19,
+    "crypto": 19348.82,
+    "eu_etf": 7723.94,
+    "ibkr": 124278.48
+   },
+   "invested": {
+    "sti": 80655.0,
+    "syfe_income": 47120.0,
+    "reit": 72754.01,
+    "hstech": 11436.48,
+    "crypto": 19430.0,
+    "eu_etf": 6900.0,
+    "ibkr": 89998.46
+   },
+   "passive": {
+    "reit_div": 872.02,
+    "bond_div": 185.89,
+    "cash_interest": 192.48
+   },
+   "note": "",
+   "units": {
+    "rsu": 471.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2025-03",
+   "values": {
+    "sti": 100585.22,
+    "rsu": 91956.39,
+    "syfe_income": 50673.26,
+    "reit": 63163.74,
+    "cash": 81706.6,
+    "hstech": 16687.28,
+    "crypto": 18771.92,
+    "eu_etf": 7662.54,
+    "ibkr": 111326.93
+   },
+   "invested": {
+    "sti": 81855.0,
+    "syfe_income": 52120.0,
+    "reit": 73954.01,
+    "hstech": 12436.48,
+    "crypto": 19430.0,
+    "eu_etf": 7200.0,
+    "ibkr": 82698.46
+   },
+   "passive": {
+    "bond_div": 272.41,
+    "cash_interest": 107.88
+   },
+   "note": "35k bonus, 8k cpf topup, -20k hdb tax -700 phone - 300 ROM attire\nsold (68*108.38) ~9896 iwda",
+   "units": {
+    "rsu": 471.0
+   },
+   "price": {
+    "rsu": 229.69
+   }
+  },
+  {
+   "month": "2025-04",
+   "values": {
+    "sti": 99084.79,
+    "rsu": 116113.54,
+    "syfe_income": 55689.09,
+    "reit": 62516.15,
+    "cash": 73120.51,
+    "hstech": 16124.69,
+    "crypto": 19934.74,
+    "eu_etf": 7628.4,
+    "ibkr": 111608.61
+   },
+   "invested": {
+    "sti": 83055.0,
+    "syfe_income": 57120.0,
+    "reit": 75154.01,
+    "hstech": 13436.48,
+    "crypto": 19430.0,
+    "eu_etf": 7500.0,
+    "ibkr": 85398.46
+   },
+   "passive": {
+    "bond_div": 203.27,
+    "cash_interest": 169.21
+   },
+   "note": "Australia + ROM ~2.5k",
+   "units": {
+    "rsu": 539.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-05",
+   "values": {
+    "sti": 103863.51,
+    "rsu": 112235.9,
+    "syfe_income": 59663.67,
+    "reit": 64476.72,
+    "cash": 64609.69,
+    "hstech": 17680.28,
+    "crypto": 21334.33,
+    "eu_etf": 8382.77,
+    "ibkr": 124540.72
+   },
+   "invested": {
+    "sti": 84255.0,
+    "syfe_income": 59120.0,
+    "reit": 76354.01,
+    "hstech": 14436.48,
+    "crypto": 19430.0,
+    "eu_etf": 7800.0,
+    "ibkr": 88098.46
+   },
+   "passive": {
+    "reit_div": 942.61,
+    "bond_div": 256.18,
+    "cash_interest": 161.35
+   },
+   "note": "Japan 2k + 3.5k ring",
+   "units": {
+    "rsu": 521.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-06",
+   "values": {
+    "sti": 105781.48,
+    "rsu": 114390.14,
+    "syfe_income": 62439.86,
+    "reit": 67449.36,
+    "cash": 74061.63,
+    "hstech": 18266.12,
+    "crypto": 19745.53,
+    "eu_etf": 8586.15,
+    "gld": 1719.76,
+    "iwda": 116921.64,
+    "qqqm": 6674.43,
+    "xyld": 194.81,
+    "ibkr_cash": 775.64
+   },
+   "invested": {
+    "sti": 85455.0,
+    "syfe_income": 61120.0,
+    "reit": 77554.01,
+    "hstech": 15436.48,
+    "crypto": 19430.0,
+    "eu_etf": 8100.0,
+    "gld": 1605.45,
+    "qqqm": 6156.49,
+    "xyld": 200.95,
+    "iwda": 82059.93
+   },
+   "passive": {
+    "bond_div": 314.52,
+    "cash_interest": 63.96
+   },
+   "note": "RSU redeemed: 10000",
+   "units": {
+    "rsu": 531.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-07",
+   "values": {
+    "sti": 111962.0,
+    "rsu": 118698.62,
+    "syfe_income": 64721.82,
+    "reit": 69761.47,
+    "cash": 70035.06,
+    "hstech": 19953.53,
+    "crypto": 23274.08,
+    "eu_etf": 8987.1,
+    "gld": 1943.49,
+    "iwda": 109942.2,
+    "qqqm": 8239.14,
+    "slv": 4847.93,
+    "xyld": 198.92,
+    "ibkr_cash": 8641.26
+   },
+   "invested": {
+    "sti": 86655.0,
+    "syfe_income": 63120.0,
+    "reit": 78754.01,
+    "hstech": 16436.48,
+    "crypto": 19930.0,
+    "eu_etf": 8400.0,
+    "gld": 1807.11,
+    "qqqm": 7390.12,
+    "slv": 5195.97,
+    "xyld": 200.95,
+    "iwda": 70263.05
+   },
+   "passive": {
+    "sti_div": 2260.09,
+    "bond_div": 267.51,
+    "cash_interest": 117.49
+   },
+   "note": "1200 woodslab table\n1450 projector\n1200 kinabalu\n0.06211342 btc in binance",
+   "units": {
+    "rsu": 551.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-08",
+   "values": {
+    "sti": 110521.73,
+    "rsu": 123868.8,
+    "syfe_income": 65085.63,
+    "reit": 73050.3,
+    "cash": 62153.89,
+    "hstech": 22185.15,
+    "crypto": 22222.25,
+    "eu_etf": 9270.03,
+    "gld": 2219.62,
+    "iwda": 104983.32,
+    "qqqm": 9430.98,
+    "slv": 7189.34,
+    "xyld": 194.57,
+    "ibkr_cash": 13400.6
+   },
+   "invested": {
+    "sti": 82702.16,
+    "syfe_income": 65120.0,
+    "reit": 79954.01,
+    "hstech": 17436.48,
+    "crypto": 20430.0,
+    "eu_etf": 8700.0,
+    "gld": 2006.52,
+    "qqqm": 8610.2,
+    "slv": 7122.17,
+    "xyld": 200.95,
+    "iwda": 64858.02
+   },
+   "passive": {
+    "reit_div": 912.4,
+    "bond_div": 262.65,
+    "cash_interest": 77.76
+   },
+   "note": "10,000 renovation\n1,179 dishwasher\n1,298 dad insurance\n0.06565269 btc in binance",
+   "units": {
+    "rsu": 575.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-09",
+   "values": {
+    "sti": 109740.59,
+    "rsu": 126023.04,
+    "syfe_income": 67613.08,
+    "reit": 74691.78,
+    "cash": 60847.22,
+    "hstech": 26184.57,
+    "crypto": 23046.25,
+    "eu_etf": 9461.9,
+    "gld": 3587.65,
+    "iwda": 108400.87,
+    "qqqm": 9974.13,
+    "slv": 9590.42,
+    "xyld": 196.14,
+    "ibkr_cash": 14057.46
+   },
+   "invested": {
+    "sti": 83902.16,
+    "syfe_income": 67120.0,
+    "reit": 81154.01,
+    "hstech": 18636.48,
+    "crypto": 20930.0,
+    "eu_etf": 9000.0,
+    "gld": 3064.8,
+    "qqqm": 8735.79,
+    "slv": 8180.49,
+    "xyld": 200.95,
+    "iwda": 64458.98
+   },
+   "passive": {
+    "bond_div": 389.86,
+    "cash_interest": 61.48
+   },
+   "note": "3793.99 sanitary, lights, fan, chairs, wood for door\nBTC held: 0.0698909",
+   "units": {
+    "rsu": 585.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-10",
+   "values": {
+    "sti": 114310.25,
+    "rsu": 128177.28,
+    "syfe_income": 70430.1,
+    "reit": 76696.1,
+    "cash": 44293.68,
+    "hstech": 26154.13,
+    "crypto": 21790.35,
+    "eu_etf": 9993.1,
+    "gld": 4814.44,
+    "iwda": 113337.3,
+    "qqqm": 11832.21,
+    "slv": 11121.49,
+    "xyld": 198.57,
+    "ibkr_cash": 11987.91
+   },
+   "invested": {
+    "sti": 85102.16,
+    "syfe_income": 69120.0,
+    "reit": 82354.01,
+    "hstech": 19836.48,
+    "crypto": 21430.0,
+    "eu_etf": 9300.0,
+    "gld": 4132.01,
+    "qqqm": 9985.16,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 65644.71
+   },
+   "passive": {
+    "bond_div": 284.5,
+    "cash_interest": 57.51
+   },
+   "note": "6,000 brother wedding\n8,000 reno payment\nBTC held: 0.0733902",
+   "units": {
+    "rsu": 595.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-11",
+   "values": {
+    "sti": 118625.08,
+    "rsu": 130331.52,
+    "syfe_income": 72360.18,
+    "reit": 77073.33,
+    "cash": 35210.16,
+    "hstech": 25204.28,
+    "crypto": 19081.13,
+    "eu_etf": 10400.57,
+    "gld": 5215.49,
+    "iwda": 114433.81,
+    "qqqm": 12847.13,
+    "slv": 12895.11,
+    "xyld": 198.87,
+    "ibkr_cash": 12089.55
+   },
+   "invested": {
+    "sti": 86302.16,
+    "syfe_income": 71120.0,
+    "reit": 83554.01,
+    "hstech": 21036.48,
+    "crypto": 21930.0,
+    "eu_etf": 9600.0,
+    "gld": 4288.02,
+    "qqqm": 11230.09,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 66642.13
+   },
+   "passive": {
+    "reit_div": 950.46,
+    "bond_div": 296.22,
+    "cash_interest": 34.5
+   },
+   "note": "4,300 (1.1k washer/dryer, 1k roborock, 0.7k penang, 1.5k (400 angbao, 300 air tics, 240 hotel, 500 spend) Alvin bkk wedding)\nBTC held: 0.0879925",
+   "units": {
+    "rsu": 605.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2025-12",
+   "values": {
+    "sti": 123152.79,
+    "rsu": 134640.0,
+    "syfe_income": 74747.27,
+    "reit": 78097.38,
+    "cash": 29486.47,
+    "hstech": 26082.15,
+    "crypto": 17878.09,
+    "eu_etf": 10525.23,
+    "gld": 5542.96,
+    "iwda": 115494.29,
+    "qqqm": 13024.13,
+    "slv": 16090.64,
+    "xyld": 197.8,
+    "ibkr_cash": 13618.24
+   },
+   "invested": {
+    "sti": 87502.16,
+    "syfe_income": 73120.0,
+    "reit": 84754.01,
+    "hstech": 22236.48,
+    "crypto": 22430.0,
+    "eu_etf": 9900.0,
+    "gld": 4545.66,
+    "qqqm": 11616.39,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 66969.5
+   },
+   "passive": {
+    "bond_div": 429.66,
+    "cash_interest": 25.06
+   },
+   "note": "3300 deposit for sofa and bed + 500 makita + 280 chairs + 300 addition paint\nBTC held: 0.0923583",
+   "units": {
+    "rsu": 625.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-01",
+   "values": {
+    "sti": 130259.39,
+    "rsu": 136794.24,
+    "syfe_income": 77109.35,
+    "reit": 79005.28,
+    "cash": 29019.7,
+    "hstech": 27939.91,
+    "crypto": 17397.18,
+    "eu_etf": 10828.32,
+    "gld": 6427.55,
+    "iwda": 117388.23,
+    "qqqm": 13436.64,
+    "slv": 18654.59,
+    "xyld": 196.61,
+    "ibkr_cash": 14324.4
+   },
+   "invested": {
+    "sti": 88702.16,
+    "syfe_income": 75120.0,
+    "reit": 85954.01,
+    "hstech": 23436.48,
+    "crypto": 22930.0,
+    "eu_etf": 10200.0,
+    "gld": 4800.77,
+    "qqqm": 11998.85,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 68125.76
+   },
+   "passive": {
+    "sti_div": 2314.92,
+    "bond_div": 312.54,
+    "cash_interest": 26.78
+   },
+   "note": "280 chair carousell\n223.71 household items\n130 move piano\n120 bed slats\nBTC held: 0.100813",
+   "units": {
+    "rsu": 635.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-02",
+   "values": {
+    "sti": 132154.27,
+    "rsu": 136794.24,
+    "syfe_income": 79656.97,
+    "reit": 81152.76,
+    "cash": 27708.26,
+    "hstech": 25819.2,
+    "crypto": 13967.61,
+    "eu_etf": 10696.35,
+    "gld": 7223.22,
+    "iwda": 118677.97,
+    "qqqm": 13426.98,
+    "slv": 20901.33,
+    "xyld": 193.05,
+    "ibkr_cash": 15049.21
+   },
+   "invested": {
+    "sti": 89902.16,
+    "syfe_income": 77120.0,
+    "reit": 87154.01,
+    "hstech": 24636.48,
+    "crypto": 23430.0,
+    "eu_etf": 10500.0,
+    "gld": 5054.36,
+    "qqqm": 12378.99,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 69267.23
+   },
+   "passive": {
+    "reit_div": 986.79,
+    "bond_div": 325.62,
+    "cash_interest": 14.3
+   },
+   "note": "500 parents ang bao\n450 wife health screening\n200 airpods\nBTC held: 0.115603",
+   "units": {
+    "rsu": 635.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-03",
+   "values": {
+    "sti": 130700.35,
+    "rsu": 140025.6,
+    "syfe_income": 78880.43,
+    "reit": 77261.27,
+    "cash": 20621.76,
+    "hstech": 24984.27,
+    "crypto": 15304.34,
+    "eu_etf": 9941.82,
+    "elfy": 64.97,
+    "gld": 6532.29,
+    "gldm": 473.07,
+    "iwda": 113131.54,
+    "nlr": 151.47,
+    "qqqm": 13345.11,
+    "slv": 17037.37,
+    "xyld": 194.91,
+    "ibkr_cash": 14175.49
+   },
+   "invested": {
+    "sti": 91152.16,
+    "syfe_income": 79120.0,
+    "reit": 88354.01,
+    "hstech": 25836.48,
+    "crypto": 23930.0,
+    "eu_etf": 10800.0,
+    "elfy": 64.82,
+    "gld": 5054.36,
+    "gldm": 515.39,
+    "nlr": 154.92,
+    "qqqm": 12765.64,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 71519.16
+   },
+   "passive": {
+    "bond_div": 456.72,
+    "cash_interest": 13.41
+   },
+   "note": "911 term insurance\n966.63 Family Danang flights\n104.16 self Danang\n975.34 Boo Sofa\n225 Dad insurance\n139.68 Kuantan\nBTC held: 0.121382",
+   "units": {
+    "rsu": 650.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-04",
+   "values": {
+    "sti": 132604.74,
+    "rsu": 147350.02,
+    "syfe_income": 82569.2,
+    "reit": 80466.19,
+    "cash": 46052.14,
+    "hstech": 27283.98,
+    "crypto": 17709.9,
+    "eu_etf": 10777.64,
+    "elfy": 138.3,
+    "gld": 6359.22,
+    "gldm": 955.58,
+    "itps": 497.04,
+    "iwda": 124752.16,
+    "nlr": 569.44,
+    "qqqm": 15685.89,
+    "slv": 16479.63,
+    "xyld": 193.48,
+    "ibkr_cash": 13543.73
+   },
+   "invested": {
+    "sti": 92402.16,
+    "syfe_income": 81120.0,
+    "reit": 89554.01,
+    "hstech": 27036.48,
+    "crypto": 24430.0,
+    "eu_etf": 11100.0,
+    "elfy": 128.92,
+    "gld": 5054.36,
+    "gldm": 1025.07,
+    "itps": 501.42,
+    "nlr": 537.29,
+    "qqqm": 13147.99,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 72811.0
+   },
+   "passive": {
+    "bond_div": 352.03,
+    "cash_interest": 11.69
+   },
+   "note": "2200 dental implant replacement\n3400 macbook pro\n1000 travel\n8000 CPF SA topup\nBTC held: 0.126502",
+   "units": {
+    "rsu": 684.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-05",
+   "values": {
+    "sti": 139424.08,
+    "rsu": 149073.41,
+    "syfe_income": 84487.09,
+    "reit": 80810.72,
+    "cash": 32194.45,
+    "hstech": 28315.09,
+    "crypto": 18045.16,
+    "eu_etf": 11408.25,
+    "elfy": 141.05,
+    "gld": 6273.69,
+    "gldm": 1433.53,
+    "itps": 1002.46,
+    "iwda": 132612.88,
+    "nlr": 873.36,
+    "qqqm": 17778.74,
+    "slv": 16926.59,
+    "xyld": 194.33,
+    "ibkr_cash": 13001.35
+   },
+   "invested": {
+    "sti": 93652.16,
+    "syfe_income": 83120.0,
+    "reit": 90754.01,
+    "hstech": 28236.48,
+    "crypto": 24930.0,
+    "eu_etf": 11400.0,
+    "elfy": 128.92,
+    "gld": 5054.36,
+    "gldm": 1536.14,
+    "itps": 1002.91,
+    "nlr": 920.7,
+    "qqqm": 13531.39,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 74074.0
+   },
+   "passive": {
+    "reit_div": 1013.75,
+    "bond_div": 352.03,
+    "cash_interest": 25.1
+   },
+   "note": "2974 AW CPF adjustment\nBTC held: 0.131802",
+   "units": {
+    "rsu": 692.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-06",
+   "values": {
+    "sti": 144699.0,
+    "rsu": 149073.41,
+    "syfe_income": 86104.53,
+    "reit": 81864.58,
+    "cash": 35383.26,
+    "hstech": 26287.7,
+    "crypto": 15488.85,
+    "eu_etf": 11624.47,
+    "elfy": 144.41,
+    "gld": 5619.58,
+    "gldm": 1763.77,
+    "itps": 1514.99,
+    "iwda": 134582.41,
+    "nlr": 1143.31,
+    "qqqm": 18371.26,
+    "slv": 13434.27,
+    "xyld": 197.4,
+    "ibkr_cash": 12438.63
+   },
+   "invested": {
+    "sti": 94902.16,
+    "syfe_income": 84120.0,
+    "reit": 91954.01,
+    "hstech": 29436.48,
+    "crypto": 25430.0,
+    "eu_etf": 11700.0,
+    "elfy": 128.92,
+    "gld": 5054.36,
+    "gldm": 2054.15,
+    "itps": 1501.04,
+    "nlr": 1309.31,
+    "qqqm": 13920.0,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 75343.38
+   },
+   "passive": {
+    "bond_div": 508.23,
+    "cash_interest": 20.83
+   },
+   "note": "BTC held: 0.138161",
+   "units": {
+    "rsu": 692.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-07",
+   "values": {
+    "sti": 157550.58,
+    "rsu": 149073.41,
+    "syfe_income": 86133.9,
+    "reit": 84049.21,
+    "cash": 37437.2,
+    "hstech": 30633.37,
+    "crypto": 16041.27,
+    "eu_etf": 12197.58,
+    "elfy": 129.89,
+    "gld": 5620.83,
+    "gldm": 2276.37,
+    "itps": 1976.98,
+    "iwda": 134679.83,
+    "nlr": 1407.39,
+    "qqqm": 17409.8,
+    "slv": 13046.39,
+    "xyld": 195.75,
+    "ibkr_cash": 11843.47
+   },
+   "invested": {
+    "sti": 96152.16,
+    "syfe_income": 85120.0,
+    "reit": 93204.01,
+    "hstech": 30636.48,
+    "crypto": 25930.0,
+    "eu_etf": 12000.0,
+    "elfy": 128.92,
+    "gld": 5054.36,
+    "gldm": 2567.48,
+    "itps": 2001.89,
+    "nlr": 1694.42,
+    "qqqm": 14305.11,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 76654.14
+   },
+   "passive": {
+    "sti_div": 2597.49,
+    "bond_div": 386.36,
+    "cash_interest": 26.21
+   },
+   "note": "",
+   "units": {
+    "rsu": 692.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-08",
+   "values": {
+    "sti": 160271.32,
+    "rsu": 149073.41,
+    "syfe_income": 87487.09,
+    "reit": 84567.04,
+    "cash": 36647.45,
+    "hstech": 30219.39,
+    "crypto": 21249.67,
+    "eu_etf": 12495.0,
+    "elfy": 126.02,
+    "gld": 6072.05,
+    "gldm": 2956.31,
+    "itps": 1949.68,
+    "iwda": 141366.95,
+    "nlr": 1923.62,
+    "qqqm": 18309.11,
+    "slv": 14723.66,
+    "xyld": 189.29,
+    "ibkr_cash": 12402.25
+   },
+   "invested": {
+    "sti": 97402.16,
+    "syfe_income": 86120.0,
+    "reit": 94454.01,
+    "hstech": 31836.48,
+    "crypto": 26430.0,
+    "eu_etf": 12300.0,
+    "elfy": 128.92,
+    "gld": 5054.36,
+    "gldm": 3057.29,
+    "itps": 2001.89,
+    "nlr": 2088.88,
+    "qqqm": 14794.9,
+    "slv": 9247.72,
+    "xyld": 200.95,
+    "iwda": 79321.29
+   },
+   "passive": {
+    "reit_div": 1134.14,
+    "bond_div": 350.77,
+    "cash_interest": 20.47
+   },
+   "note": "family union buffet + others 3000\nBTC held: 0.144314",
+   "units": {
+    "rsu": 692.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  },
+  {
+   "month": "2026-09",
+   "values": {
+    "sti": 160271.32,
+    "rsu": 149073.41,
+    "syfe_income": 87487.09,
+    "reit": 84567.04,
+    "cash": 36647.45,
+    "hstech": 30219.39,
+    "crypto": 21249.67,
+    "eu_etf": 12495.0,
+    "iwda": 144982.66,
+    "qqqm": 19787.53,
+    "slv": 14410.13,
+    "gld": 5918.96,
+    "gldm": 3360.51,
+    "nlr": 1745.47,
+    "itps": 1957.16,
+    "xyld": 189.69,
+    "elfy": 123.08,
+    "ibkr_cash": 12495.81
+   },
+   "invested": {
+    "sti": 98652.16,
+    "syfe_income": 87120.0,
+    "reit": 95704.01,
+    "hstech": 33036.48,
+    "crypto": 26930.0,
+    "eu_etf": 12600.0,
+    "iwda": 82866.67,
+    "qqqm": 15282.65,
+    "slv": 9247.72,
+    "gld": 5054.36,
+    "gldm": 3544.94,
+    "nlr": 2088.88,
+    "itps": 2001.89,
+    "xyld": 200.95,
+    "elfy": 128.92
+   },
+   "passive": {},
+   "note": "IBKR from IBKR (25 Sep close, USD/SGD 1.2773): bought IWDA, QQQM, GLDM on 8 Sep.\nOther accounts carried over from Aug — update them.",
+   "estimated": [
+    "sti",
+    "rsu",
+    "syfe_income",
+    "reit",
+    "cash",
+    "hstech",
+    "crypto",
+    "eu_etf"
+   ],
+   "units": {
+    "rsu": 692.0
+   },
+   "price": {
+    "rsu": 253.44
+   }
+  }
+ ],
+ "budgets": [
+  {
+   "month": "2026-09",
+   "updatedAt": "2026-09-26T02:46:15+00:00",
+   "income": [
+    {
+     "name": "Salary",
+     "amount": 15800
+    }
+   ],
+   "deductions": [
+    {
+     "name": "CPF (employee)",
+     "amount": 1600
+    }
+   ],
+   "expenses": [
+    {
+     "name": "Mum",
+     "amount": 350
+    },
+    {
+     "name": "HDB Loan",
+     "amount": 0
+    },
+    {
+     "name": "Dad Insurance",
+     "amount": 230
+    },
+    {
+     "name": "Dad Medical",
+     "amount": 250
+    },
+    {
+     "name": "Personal",
+     "amount": 1000
+    },
+    {
+     "name": "Phone Bill + M1",
+     "amount": 65
+    },
+    {
+     "name": "Utilities",
+     "amount": 120
+    },
+    {
+     "name": "Transport",
+     "amount": 100
+    },
+    {
+     "name": "Groceries",
+     "amount": 100
+    },
+    {
+     "name": "Aviva Insurance",
+     "amount": 20
+    },
+    {
+     "name": "tax",
+     "amount": 903
+    }
+   ],
+   "investments": [
+    {
+     "name": "IWDA ETF",
+     "amount": 3600
+    },
+    {
+     "name": "QQQM ETF",
+     "amount": 500
+    },
+    {
+     "name": "STI ETF",
+     "amount": 1250
+    },
+    {
+     "name": "NIKKO AM REITS ETF",
+     "amount": 1250
+    },
+    {
+     "name": "HSTECH ETF",
+     "amount": 1200
+    },
+    {
+     "name": "SYFE Income +",
+     "amount": 1000
+    },
+    {
+     "name": "GLDM",
+     "amount": 500
+    },
+    {
+     "name": "SLV",
+     "amount": 0
+    },
+    {
+     "name": "NLR",
+     "amount": 0
+    },
+    {
+     "name": "ITPS",
+     "amount": 0
+    },
+    {
+     "name": "BTC",
+     "amount": 500
+    },
+    {
+     "name": "Singlife Savvy Invest",
+     "amount": 300
+    },
+    {
+     "name": "SYFE Cash + / FSM Cash / Cash",
+     "amount": 962
+    }
+   ]
+  }
+ ]
+}
