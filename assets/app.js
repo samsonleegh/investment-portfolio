@@ -834,8 +834,10 @@ function fullNetWorth() {
   if (cpf) (t += cpfTotal(cpf)), parts.push(`CPF ${compact(cpfTotal(cpf))}`), (extra = true);
   for (const loan of state.data.loans || []) {
     const bal = [...months].reverse().find((m) => m.loans?.[loan.id]?.balance != null)?.loans[loan.id].balance;
-    if (loan.propertyValue) (t += loan.propertyValue), parts.push(`flat ${compact(loan.propertyValue)}`), (extra = true);
-    if (bal != null && loan.propertyValue) (t -= bal), parts.push(`loan −${compact(bal)}`);
+    const share = (loan.sharePct ?? 100) / 100;
+    const yours = share < 1 ? " (your half)" : "";
+    if (loan.propertyValue) (t += loan.propertyValue * share), parts.push(`flat${yours} ${compact(loan.propertyValue * share)}`), (extra = true);
+    if (bal != null && loan.propertyValue) (t -= bal * share), parts.push(`loan${yours} −${compact(bal * share)}`);
   }
   return { total: t, parts, extra };
 }
@@ -851,21 +853,22 @@ function renderLoans() {
     const last = [...recs].reverse().find((r) => r.balance != null);
     const interest12 = sum(recs.slice(-12).map((r) => r.interest));
     const lockIn = loan.lockInEnds ? monthsUntil(loan.lockInEnds) : null;
+    const share = (loan.sharePct ?? 100) / 100;
     const tile = (label, value, sub, cls) => h("div", { class: `tile ${cls || ""}` }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
     const lockLabel = loan.lockInEnds ? new Date(loan.lockInEnds).toLocaleDateString("en-SG", { day: "numeric", month: "short", year: "numeric" }) : null;
     const tiles = h(
       "div",
       { class: "tiles" },
-      tile("Outstanding", last ? money(last.balance) : "–", last ? `as of ${monthLabel(last.month, true)}` : "Add it in + Add month"),
+      tile("Outstanding", last ? money(last.balance) : "–", last ? (share < 1 ? `your ${Math.round(share * 100)}%: ${money(last.balance * share)}` : `as of ${monthLabel(last.month, true)}`) : "Add it in + Add month"),
       tile(
         "Interest rate",
         loan.rate != null ? `${loan.rate}%` : "–",
         lockLabel ? (lockIn < 0 ? `Lock-in ended ${lockLabel}` : `Lock-in ends ${lockLabel} · ${lockIn <= 0 ? "this month" : `in ${lockIn} mo`}`) : null,
         lockIn != null && lockIn >= 0 && lockIn <= 3 ? "warn" : "",
       ),
-      tile("Monthly instalment", loan.instalment != null ? money(loan.instalment) : "–", [loan.paidFrom && `from ${loan.paidFrom}`, loan.dueDay && `due on the ${loan.dueDay}th`].filter(Boolean).join(" · ") || null),
+      tile("Monthly instalment", loan.instalment != null ? money(loan.instalment) : "–", [share < 1 && loan.instalment != null && `your share ${money(loan.instalment * share)}`, loan.paidFrom && `from ${loan.paidFrom}`, loan.dueDay && `due on the ${loan.dueDay}th`].filter(Boolean).join(" · ") || null),
       tile("Interest paid", money(interest12), recs.length >= 12 ? "last 12 months" : `last ${recs.length} month${recs.length === 1 ? "" : "s"}`),
-      loan.propertyValue && last ? tile("Home equity", money(loan.propertyValue - last.balance), `${money(loan.propertyValue)} value − loan`) : null,
+      loan.propertyValue && last ? tile("Home equity", money(loan.propertyValue - last.balance), share < 1 ? `your ${Math.round(share * 100)}%: ${money((loan.propertyValue - last.balance) * share)}` : `${money(loan.propertyValue)} value − loan`) : null,
     );
     const head = h("thead", {}, h("tr", {}, h("th", {}, "Month"), ...["Balance", "Repaid", "Interest", "Principal paid"].map((t) => h("th", { class: "num" }, t))));
     const body = h(
@@ -1511,6 +1514,7 @@ function renderLoanList() {
           num(loan, "instalment", "Monthly instalment"),
           num(loan, "dueDay", "Due day of month"),
           num(loan, "propertyValue", "Property value"),
+          num(loan, "sharePct", "Your share %"),
           h("label", { class: "field" }, h("span", {}, "Lock-in ends"), h("input", { type: "date", value: loan.lockInEnds || "", onchange: (e) => ((loan.lockInEnds = e.target.value || undefined), changed()) })),
           h("label", { class: "field" }, h("span", {}, "Paid from"), h("input", { value: loan.paidFrom || "", placeholder: "CPF / cash", onchange: (e) => ((loan.paidFrom = e.target.value.trim() || undefined), changed()) })),
         ),
@@ -1618,6 +1622,8 @@ const INSURANCE_DEFAULTS = [
   ["Dad's health insurance", 1150],
 ];
 
+const PLAN_DEFAULTS = { partTime: 0, cpfInflow: 0, returnPct: 5, inflationPct: 2.5, age: 35, horizon: 40, cpfPayout: 0, includeRsu: true, buffer: 30000, rsuGrowthPct: 5, rsuLeaverPrice: true };
+
 function defaultPlan() {
   const b = state.data.budgets.at(-1);
   const cut = { mum: 200, personal: 700, tax: 50 };
@@ -1630,22 +1636,34 @@ function defaultPlan() {
   }
   items.push({ name: "Travel", group: "Monthly spending", per: "yr", now: 5000, semi: 2500, keep: true, note: "Estimate — edit to your real yearly travel spend" });
   for (const [name, now, semi, note] of INSURANCE_DEFAULTS) items.push({ name, group: "Insurance (yearly premiums)", per: "yr", now, semi: semi ?? now, keep: true, note: note || "" });
-  return { items, partTime: 0, cpfInflow: 0, returnPct: 5, inflationPct: 2.5, age: null, horizon: 40, cpfPayout: 0, includeRsu: true, buffer: 30000 };
+  return { items, ...PLAN_DEFAULTS };
 }
 
 const monthly = (it, key) => (it.keep ? (it.per === "yr" ? it[key] / 12 : it[key]) : 0);
 
+/** Latest buyback prices for a units-priced asset (e.g. RSUs): { current, former } in its own currency. */
+function latestBuyback(asset) {
+  const b = [...(asset?.buybacks || [])].sort((x, y) => x.when.localeCompare(y.when)).at(-1);
+  return b || null;
+}
+
 function simulate(plan, returnPct) {
   const months = state.data.months;
   const last = months.at(-1);
-  const rsu = state.data.assets.filter((a) => a.valuation === "units").reduce((t, a) => t + (last?.values[a.id] || 0), 0);
-  const investable = (last ? total(last) : 0) - (plan.includeRsu ? 0 : rsu) - (plan.buffer || 0);
+  const units = state.data.assets.filter((a) => a.valuation === "units");
+  const rsuNow = units.reduce((t, a) => t + (last?.values[a.id] || 0), 0);
+  // Leaving the company: former-employee buyback price instead of the current-employee one.
+  const lb = latestBuyback(units[0]);
+  const leaver = plan.rsuLeaverPrice !== false && lb?.former && lb?.current ? lb.former / lb.current : 1;
+  let rsu = plan.includeRsu ? rsuNow * leaver : 0;
+  const investable = (last ? total(last) : 0) - rsuNow - (plan.buffer || 0);
   const cpf = [...months].reverse().find((m) => m.cpf)?.cpf || {};
   const loan = (state.data.loans || [])[0];
-  let loanBal = loan ? [...months].reverse().find((m) => m.loans?.[loan.id]?.balance != null)?.loans[loan.id].balance ?? 0 : 0;
+  const share = (loan?.sharePct ?? 100) / 100;
+  let loanBal = (loan ? [...months].reverse().find((m) => m.loans?.[loan.id]?.balance != null)?.loans[loan.id].balance ?? 0 : 0) * share;
   const loanRate = (loan?.rate ?? 0) / 100;
-  const instalment = loan?.instalment ?? 0;
-  const r = returnPct / 100, inf = (plan.inflationPct || 0) / 100;
+  const instalment = (loan?.instalment ?? 0) * share;
+  const r = returnPct / 100, inf = (plan.inflationPct || 0) / 100, rg = (plan.rsuGrowthPct ?? returnPct) / 100;
   const spendMo = sum(plan.items.map((it) => monthly(it, "semi")));
   const years = plan.age ? Math.max(1, 95 - plan.age) : plan.horizon || 40;
   let bal = investable, oa = cpf.oa || 0, depletedAt = null, oaOutYear = null, loanOffYear = null;
@@ -1663,16 +1681,37 @@ function simulate(plan, returnPct) {
     const cashMortgage = due - fromOa;
     if (cashMortgage > 0 && oaOutYear == null) oaOutYear = y;
     const need = spend + cashMortgage - income;
+    // Spend from investments first; sell RSUs at buyback only once those run out.
     bal = bal * (1 + r) - need;
-    if (bal < 0 && depletedAt == null) depletedAt = y + 1;
-    rows.push({ y, real: Math.max(bal, 0) / (1 + inf) ** (y + 1), need, cashMortgage });
+    rsu *= 1 + rg;
+    if (bal < 0) (rsu += bal), (bal = 0);
+    if (rsu < 0 && depletedAt == null) depletedAt = y + 1;
+    rows.push({ y, real: Math.max(bal + Math.max(rsu, 0), 0) / (1 + inf) ** (y + 1), need, cashMortgage });
   }
-  return { investable, spendMo, instalment, rows, depletedAt, oaOutYear, loanOffYear, years, oaStart: cpf.oa || 0 };
+  const start = investable + (plan.includeRsu ? rsuNow * leaver : 0);
+  return { investable: start, rsuStart: plan.includeRsu ? rsuNow * leaver : 0, leaver, spendMo, instalment, share, rows, depletedAt, oaOutYear, loanOffYear, years, oaStart: cpf.oa || 0 };
+}
+
+function rsuNote(plan) {
+  const a = state.data.assets.find((x) => x.valuation === "units" && x.buybacks?.length);
+  if (!a) return null;
+  const b = [...a.buybacks].sort((x, y) => x.when.localeCompare(y.when));
+  const first = b[0], last = b.at(-1);
+  const yrs = (new Date(last.when + "-01") - new Date(first.when + "-01")) / (365.25 * 864e5);
+  const cagr = yrs > 0 ? (last.current / first.current) ** (1 / yrs) - 1 : null;
+  return h(
+    "li",
+    {},
+    `${a.name} buyback price rose from US$${first.current} (${monthLabel(first.when)}) to US$${last.current} (${monthLabel(last.when)}), about ${pct(cagr, 0)} a year. ` +
+      `If you leave, you get the former-employee price (US$${last.former}, ${pct(1 - last.former / last.current, 0)} lower)${plan.rsuLeaverPrice !== false ? ", which is what this plan uses" : ""}. ` +
+      `The plan assumes ${plan.rsuGrowthPct}%/yr from here; past buyback growth isn't guaranteed.`,
+  );
 }
 
 let retireSaveTimer;
 function renderRetire({ table = true } = {}) {
   const plan = (state.data.plan ||= defaultPlan());
+  for (const [k, v] of Object.entries(PLAN_DEFAULTS)) if (plan[k] === undefined) plan[k] = v;
   const save = () => {
     clearTimeout(retireSaveTimer);
     retireSaveTimer = setTimeout(() => persist(), 700);
@@ -1689,7 +1728,7 @@ function renderRetire({ table = true } = {}) {
   const rateCls = (x) => (x <= 0.04 ? "" : "warn");
   $("#rt-tiles").replaceChildren(
     tile("Semi-retired spending", `${money(base.spendMo)}/mo`, `vs ${money(nowMo)}/mo now`),
-    tile("Invested money to draw on", money(base.investable), `after a ${money(plan.buffer || 0)} cash buffer${plan.includeRsu ? "" : ", excl. RSU"}`),
+    tile("Invested money to draw on", money(base.investable), `after a ${money(plan.buffer || 0)} cash buffer${plan.includeRsu ? ` · RSU ${money(base.rsuStart)}${base.leaver < 1 ? " at leaver price" : ""}` : " · excl. RSU"}`),
     tile("Draw while CPF OA pays the loan", pct(rate(Math.max(0, yr1))), `${money(Math.max(0, yr1))}/yr · 4% is a common rule of thumb`, rateCls(rate(yr1))),
     afterOa != null ? tile("Draw once the loan moves to cash", pct(rate(afterOa)), `${money(afterOa)}/yr from year ${base.oaOutYear + 1}`, rateCls(rate(afterOa))) : "",
     tile(`At ${plan.returnPct}% return`, lastsText(base), `At ${plan.returnPct - 2}%: ${lastsText(low).toLowerCase()}`, base.depletedAt ? "warn" : ""),
@@ -1719,8 +1758,10 @@ function renderRetire({ table = true } = {}) {
     h(
       "ul",
       {},
-      loan && oaMonths != null ? h("li", {}, `Your CPF OA (${money(base.oaStart)}) covers the ${money(base.instalment)} instalment for roughly ${oaMonths} months without new contributions. After that, the loan is paid from cash. That's the biggest jump in what you'd need.`) : null,
+      loan && base.share < 1 ? h("li", {}, `You pay ${Math.round(base.share * 100)}% of the mortgage: ${money(base.instalment)} of the ${money(loan.instalment)} instalment. Your wife pays the rest; if her situation changes, so does yours.`) : null,
+      loan && oaMonths != null ? h("li", {}, `Your CPF OA (${money(base.oaStart)}) covers your ${money(base.instalment)} share for roughly ${oaMonths} months without new contributions. After that, the loan is paid from cash. That's the biggest jump in what you'd need.`) : null,
       base.loanOffYear ? h("li", {}, `At today's instalment and rate, the loan is paid off in about ${base.loanOffYear} years. The rate can change after your lock-in ends${loan?.lockInEnds ? ` (${loan.lockInEnds})` : ""}.`) : null,
+      rsuNote(plan),
       h("li", {}, "Part-time work helps twice: it covers spending and adds CPF contributions to your OA, keeping the loan on CPF for longer."),
       group ? h("li", {}, "Group term cover is usually tied to your employer and ends when you leave, so it's set to S$0 here.") : null,
       h("li", {}, "Insurance: term life mainly protects people who depend on your income and any co-borrower on the loan. Critical illness pays a lump sum if you're diagnosed, which can matter more without a salary or sick leave. Cancelling is hard to undo: buying cover again later costs more and may exclude conditions. Worth reviewing with a licensed adviser before dropping either."),
@@ -1759,7 +1800,9 @@ function renderRetire({ table = true } = {}) {
     field("Your age (optional)", "age", { hint: "e.g. 35", int: true }),
     field("CPF payout from 65 (S$/mo)", "cpfPayout", { hint: "check CPF LIFE estimator" }),
     field("Years to plan for (if no age)", "horizon", { int: true }),
+    field("RSU growth (%/yr)", "rsuGrowthPct"),
     h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.includeRsu, onchange: (e) => ((plan.includeRsu = e.target.checked), renderRetire({ table: false }), save()) }), "Count TikTok RSU as investable"),
+    h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.rsuLeaverPrice !== false, onchange: (e) => ((plan.rsuLeaverPrice = e.target.checked), renderRetire({ table: false }), save()) }), "Value RSU at former-employee buyback price"),
     h("button", { class: "btn ghost", type: "button", onclick: () => { if (confirm("Reset the semi-retire plan to the starting scenario?")) { state.data.plan = defaultPlan(); renderRetire(); save(); } } }, "Reset to starting scenario"),
   );
 
@@ -1801,7 +1844,7 @@ function renderRetire({ table = true } = {}) {
       ),
     );
   }
-  if (loan) rows.push(h("tr", { class: "group-row" }, h("td", { colspan: "5" }, "Housing")), h("tr", {}, h("td", {}), h("td", {}, h("div", {}, `${loan.name || "Loan"} instalment`), h("div", { class: "hint", style: { textAlign: "left" } }, "Paid from CPF OA until it runs low, then from cash (modelled above)")), h("td", { class: "num" }, money(base.instalment)), h("td", { class: "num" }, money(base.instalment)), h("td", { class: "num muted" }, "CPF → cash")));
+  if (loan) rows.push(h("tr", { class: "group-row" }, h("td", { colspan: "5" }, "Housing")), h("tr", {}, h("td", {}), h("td", {}, h("div", {}, `${loan.name || "Loan"} instalment`), h("div", { class: "hint", style: { textAlign: "left" } }, "Paid from CPF OA until it runs low, then from cash (modelled above)")), h("td", { class: "num" }, money(base.instalment)), h("td", { class: "num" }, money(base.instalment)), h("td", { class: "num muted" }, base.share < 1 ? `your ${Math.round(base.share * 100)}%` : "CPF → cash")));
   $("#rt-spend").replaceChildren(head, h("tbody", {}, rows));
 }
 
