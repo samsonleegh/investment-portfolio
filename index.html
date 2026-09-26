@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+  <title>Portfolio Tracker</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M7 22l6-7 5 4 7-9' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script type="module" src="assets/app.js"></script>
+</head>
+<body>
+  <!-- Lock screen: shown until the data is decrypted -->
+  <section id="lock" class="lock" hidden>
+    <form id="lock-form" class="lock-card">
+      <h1>Portfolio Tracker</h1>
+      <p id="lock-msg" class="muted">Enter your passphrase to unlock your data.</p>
+      <label class="field">
+        <span>Passphrase</span>
+        <input id="lock-pass" type="password" autocomplete="current-password" required minlength="8">
+      </label>
+      <label class="field" id="lock-pass2-wrap" hidden>
+        <span>Repeat passphrase</span>
+        <input id="lock-pass2" type="password" autocomplete="new-password" minlength="8">
+      </label>
+      <label class="check"><input id="lock-remember" type="checkbox"> Remember on this device</label>
+      <p id="lock-error" class="error" role="alert"></p>
+      <button class="btn primary" type="submit">Unlock</button>
+      <div class="lock-alt">
+        <button class="link" type="button" id="lock-settings">GitHub sync settings</button>
+        <button class="link" type="button" id="lock-import">Import a file</button>
+      </div>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Portfolio</span>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button role="tab" class="tab" data-tab="portfolio" aria-selected="true">Portfolio</button>
+        <button role="tab" class="tab" data-tab="cashflow" aria-selected="false">Monthly cash flow</button>
+      </nav>
+      <div class="actions">
+        <button id="sync-status" class="sync" type="button" title="Sync status"></button>
+        <button id="btn-add-month" class="btn primary" type="button">+ Add month</button>
+        <button id="btn-settings" class="btn icon" type="button" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ PORTFOLIO TAB ============ -->
+      <section id="tab-portfolio" class="tabpanel" role="tabpanel">
+        <div class="filters">
+          <div class="seg" id="range" role="radiogroup" aria-label="Time range">
+            <button data-range="12" role="radio">1Y</button>
+            <button data-range="36" role="radio">3Y</button>
+            <button data-range="60" role="radio">5Y</button>
+            <button data-range="0" role="radio">All</button>
+          </div>
+          <span class="muted small" id="range-label"></span>
+        </div>
+
+        <div class="hero-row">
+          <div class="hero card">
+            <div class="label">Net worth · <span id="hero-month"></span></div>
+            <div class="hero-value" id="hero-value"></div>
+            <div class="deltas">
+              <span id="hero-mom"></span>
+              <span id="hero-yoy"></span>
+            </div>
+          </div>
+          <div class="tiles" id="tiles"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Portfolio trend</h2>
+              <p class="muted small" id="trend-sub">Total value vs. the money you put in; the gap is your investment gain.</p>
+            </div>
+            <div class="seg small" id="trend-mode" role="radiogroup" aria-label="Trend view">
+              <button data-mode="total" role="radio">Total</button>
+              <button data-mode="stack" role="radio">By asset</button>
+            </div>
+          </div>
+          <div class="chart tall"><canvas id="chart-trend" aria-label="Portfolio value over time"></canvas></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>What moved it each month</h2>
+                <p class="muted small">Net new money you added vs. market gain or loss.</p>
+              </div>
+            </div>
+            <div class="chart"><canvas id="chart-change" aria-label="Monthly change split into new money and market movement"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Allocation</h2>
+                <p class="muted small" id="alloc-sub"></p>
+              </div>
+            </div>
+            <div id="alloc" class="barlist"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Holdings</h2>
+              <p class="muted small">Gain is market value minus what you invested. Cash and RSUs have no cost basis.</p>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="holdings" class="table"></table></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Passive income</h2>
+              <p class="muted small" id="passive-sub"></p>
+            </div>
+          </div>
+          <div class="chart"><canvas id="chart-passive" aria-label="Dividends and interest by month"></canvas></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Monthly history</h2>
+              <p class="muted small">Tap a row to edit it. <span class="est">~</span> marks values interpolated for months left blank in the spreadsheet.</p>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="history" class="table"></table></div>
+          <button id="history-more" class="btn ghost full" type="button">Show all months</button>
+        </div>
+      </section>
+
+      <!-- ============ CASH FLOW TAB ============ -->
+      <section id="tab-cashflow" class="tabpanel" role="tabpanel" hidden>
+        <div class="filters">
+          <label class="inline">
+            <span class="muted small">Month</span>
+            <select id="cf-month"></select>
+          </label>
+          <button id="cf-new" class="btn" type="button">+ New month</button>
+          <button id="cf-delete" class="btn ghost danger" type="button">Delete month</button>
+        </div>
+
+        <div class="tiles wide" id="cf-tiles"></div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Where your take-home pay goes</h2>
+              <p class="muted small" id="cf-split-sub"></p>
+            </div>
+          </div>
+          <div id="cf-split" class="splitbar" role="img"></div>
+          <div id="cf-split-legend" class="legend"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div><h2>Expenses</h2><p class="muted small" id="cf-exp-sub"></p></div></div>
+            <div id="cf-exp" class="barlist"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Investments &amp; savings</h2><p class="muted small" id="cf-inv-sub"></p></div></div>
+            <div id="cf-inv" class="barlist"></div>
+          </div>
+        </div>
+
+        <div class="card" id="cf-trend-card">
+          <div class="card-head">
+            <div>
+              <h2>Cash flow over time</h2>
+              <p class="muted small">Planned split of take-home pay by month.</p>
+            </div>
+          </div>
+          <div class="chart"><canvas id="chart-cf-trend" aria-label="Expenses, investments and left over by month"></canvas></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Edit this month</h2>
+              <p class="muted small">Changes save automatically.</p>
+            </div>
+          </div>
+          <div id="cf-editor" class="cf-editor"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add / edit month -->
+  <dialog id="month-dialog" class="dialog">
+    <form id="month-form">
+      <header class="dialog-head">
+        <h2 id="month-title">Add month</h2>
+        <button class="btn icon" type="button" data-close aria-label="Close">✕</button>
+      </header>
+      <div class="dialog-body">
+        <label class="field">
+          <span>Month</span>
+          <input id="mf-month" type="month" required>
+        </label>
+        <p class="muted small">Enter each holding's market value at month end. <b>Added this month</b> is new money you put in (negative if you withdrew). It's pre-filled from last month.</p>
+        <div class="table-wrap">
+          <table class="table form-table" id="mf-assets"></table>
+        </div>
+        <div class="mf-total" id="mf-total"></div>
+        <h3>Dividends &amp; interest received</h3>
+        <div class="field-grid" id="mf-passive"></div>
+        <label class="field">
+          <span>Notes (big expenses, bonuses…)</span>
+          <textarea id="mf-note" rows="3"></textarea>
+        </label>
+      </div>
+      <footer class="dialog-foot">
+        <button id="mf-delete" class="btn ghost danger" type="button">Delete month</button>
+        <span class="spacer"></span>
+        <button class="btn" type="button" data-close>Cancel</button>
+        <button class="btn primary" id="mf-save" type="submit">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Settings -->
+  <dialog id="settings-dialog" class="dialog">
+    <form id="settings-form">
+      <header class="dialog-head">
+        <h2>Settings</h2>
+        <button class="btn icon" type="button" data-close aria-label="Close">✕</button>
+      </header>
+      <div class="dialog-body">
+        <h3>GitHub sync</h3>
+        <p class="muted small">Your data is encrypted with your passphrase before it goes to GitHub. The token is stored only in this browser. Use a <b>fine-grained token</b> with <i>Contents: read &amp; write</i> on this one repository.</p>
+        <div class="field-grid">
+          <label class="field"><span>Owner</span><input id="gh-owner" autocomplete="off" placeholder="your-github-username"></label>
+          <label class="field"><span>Repository</span><input id="gh-repo" autocomplete="off" placeholder="investment-portfolio"></label>
+          <label class="field"><span>Branch</span><input id="gh-branch" autocomplete="off" placeholder="main"></label>
+          <label class="field"><span>File path</span><input id="gh-path" autocomplete="off" placeholder="data/portfolio.enc.json"></label>
+        </div>
+        <label class="field"><span>Token</span><input id="gh-token" type="password" autocomplete="off" placeholder="github_pat_…"></label>
+        <div class="row">
+          <button id="gh-test" class="btn" type="button">Test connection</button>
+          <span id="gh-test-msg" class="small"></span>
+        </div>
+
+        <div id="settings-unlocked">
+          <h3>Assets</h3>
+          <p class="muted small">Order sets chart colour. Assets past the 7th share the “Other” colour in the stacked chart. Untick <i>cost</i> for things with no purchase price (cash, RSUs).</p>
+          <div id="asset-list" class="asset-list"></div>
+          <div class="row">
+            <input id="new-asset" placeholder="New asset name, e.g. QQQM">
+            <button id="add-asset" class="btn" type="button">Add asset</button>
+          </div>
+
+          <h3>Data</h3>
+          <div class="row wrap">
+            <button id="export-json" class="btn" type="button">Download backup (encrypted)</button>
+            <button id="export-plain" class="btn" type="button">Download plain JSON</button>
+            <button id="import-json" class="btn" type="button">Import file…</button>
+            <button id="change-pass" class="btn" type="button">Change passphrase</button>
+            <button id="lock-now" class="btn ghost" type="button">Lock</button>
+          </div>
+
+          <h3>Appearance</h3>
+          <div class="seg" id="theme-seg" role="radiogroup" aria-label="Theme">
+            <button data-theme-opt="system" role="radio">System</button>
+            <button data-theme-opt="light" role="radio">Light</button>
+            <button data-theme-opt="dark" role="radio">Dark</button>
+          </div>
+        </div>
+      </div>
+      <footer class="dialog-foot">
+        <span class="spacer"></span>
+        <button class="btn primary" type="submit">Done</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <input id="file-input" type="file" accept="application/json,.json" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

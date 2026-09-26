@@ -1,0 +1,11 @@
+# Private source data — never commit
+*.xlsx
+*.xls
+data/portfolio.json
+portfolio-*.json
+
+# Local tooling
+.venv/
+.claude/
+.DS_Store
+__pycache__/
