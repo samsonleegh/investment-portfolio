@@ -129,6 +129,14 @@
           <div class="table-wrap"><table id="holdings" class="table"></table></div>
         </div>
 
+        <div class="card" id="cpf-card" hidden>
+          <div id="cpf-body"></div>
+        </div>
+
+        <div class="card" id="loan-card" hidden>
+          <div id="loan-body"></div>
+        </div>
+
         <div class="card">
           <div class="card-head">
             <div>
@@ -228,6 +236,8 @@
         <div class="mf-total" id="mf-total"></div>
         <h3>Dividends &amp; interest received</h3>
         <div class="field-grid" id="mf-passive"></div>
+        <div id="mf-cpf"></div>
+        <div id="mf-loans"></div>
         <label class="field">
           <span>Notes (big expenses, bonuses…)</span>
           <textarea id="mf-note" rows="3"></textarea>
@@ -273,6 +283,11 @@
             <input id="new-asset" placeholder="New asset name, e.g. QQQM">
             <button id="add-asset" class="btn" type="button">Add asset</button>
           </div>
+
+          <h3>Loans</h3>
+          <p class="muted small">Tracked separately: loans don't reduce the net worth shown, since your property's value isn't tracked.</p>
+          <div id="loan-list" class="loan-list"></div>
+          <button id="add-loan" class="btn" type="button">Add loan</button>
 
           <h3>Data</h3>
           <div class="row wrap">

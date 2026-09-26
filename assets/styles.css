@@ -188,6 +188,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px 20px 64px; }
 .tile.warn { background: var(--warn-bg); }
 .tile.warn .value, .tile.warn .sub { color: var(--warn-ink); }
 
+.loan-block + .loan-block { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--grid); }
+.loan-table { margin-top: 12px; }
+.loan-edit { border: 1px solid var(--border); border-radius: 10px; padding: 4px 12px 10px; margin-bottom: 10px; }
 .chart { position: relative; height: 280px; }
 .chart.tall { height: 360px; }
 

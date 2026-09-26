@@ -269,6 +269,7 @@ function mergeAdditions(local, remote) {
     if (i < 0) local.budgets.push(rb);
     else if ((rb.updatedAt || "") > (local.budgets[i].updatedAt || "")) local.budgets[i] = rb;
   }
+  if (!local.loans?.length && remote.loans?.length) local.loans = remote.loans;
   const byMonth = Object.fromEntries(local.months.map((m) => [m.month, m]));
   const latest = local.months.reduce((mx, m) => (m.month > mx ? m.month : mx), "");
   for (const rm of remote.months || []) {
@@ -277,6 +278,8 @@ function mergeAdditions(local, remote) {
       if (rm.month > latest) local.months.push(rm);
       continue;
     }
+    for (const [id, rec] of Object.entries(rm.loans || {})) if (!lm.loans?.[id]) (lm.loans ||= {})[id] = rec;
+    if (rm.cpf && !lm.cpf) lm.cpf = rm.cpf;
     for (const id of Object.keys(rm.units || {})) {
       if (lm.units?.[id] == null && Math.abs((lm.values?.[id] ?? NaN) - rm.values[id]) < 0.02) {
         (lm.units ||= {})[id] = rm.units[id];
@@ -308,6 +311,7 @@ function emptyData() {
 function normalise(d) {
   d.assets ||= [];
   d.passiveTypes ||= [];
+  d.loans ||= [];
   d.months = (d.months || []).map((m) => ({ values: {}, invested: {}, passive: {}, note: "", ...m })).sort((a, b) => a.month.localeCompare(b.month));
   d.budgets = (d.budgets || []).sort((a, b) => a.month.localeCompare(b.month));
   return d;
@@ -580,6 +584,8 @@ function renderPortfolio() {
   renderAllocation(last);
   renderHoldings(last, prev);
   renderPassive(view);
+  renderCpf();
+  renderLoans();
   renderHistory(all);
 }
 
@@ -757,6 +763,104 @@ function renderHoldings(last, prev) {
   $("#holdings").replaceChildren(head, body, foot);
 }
 
+/* CPF: tracked on its own (locked until retirement), not added to net worth. */
+const CPF_ACCOUNTS = [
+  { id: "oa", name: "Ordinary (OA)" },
+  { id: "sa", name: "Special (SA)" },
+  { id: "ma", name: "MediSave (MA)" },
+];
+const cpfTotal = (c) => sum(CPF_ACCOUNTS.map((a) => c?.[a.id]));
+
+function renderCpf() {
+  const recs = state.data.months.filter((m) => m.cpf).map((m) => ({ month: m.month, ...m.cpf }));
+  $("#cpf-card").hidden = !recs.length;
+  if (!recs.length) return;
+  const last = recs.at(-1);
+  const prev = recs.at(-2);
+  const yearAgo = recs.find((r) => r.month === addMonths(last.month, -12));
+  const tile = (label, value, sub) => h("div", { class: "tile" }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
+  const delta = (a, b) => (b != null ? `${signed(a - b)} vs ${monthLabel(prev.month)}` : `as of ${monthLabel(last.month, true)}`);
+  const tiles = h(
+    "div",
+    { class: "tiles" },
+    tile("CPF total", money(cpfTotal(last)), yearAgo ? `${signed(cpfTotal(last) - cpfTotal(yearAgo))} in 12 months` : `as of ${monthLabel(last.month, true)}`),
+    ...CPF_ACCOUNTS.map((a) => tile(a.name, money(last[a.id]), delta(last[a.id], prev?.[a.id]))),
+  );
+  const head = h("thead", {}, h("tr", {}, h("th", {}, "Month"), ...[...CPF_ACCOUNTS.map((a) => a.name), "Total"].map((t) => h("th", { class: "num" }, t))));
+  const body = h(
+    "tbody",
+    {},
+    [...recs].reverse().slice(0, 12).map((r) =>
+      h("tr", {}, h("td", {}, monthLabel(r.month, true)), ...CPF_ACCOUNTS.map((a) => h("td", { class: "num" }, r[a.id] != null ? money(r[a.id]) : "–")), h("td", { class: "num" }, money(cpfTotal(r)))),
+    ),
+  );
+  $("#cpf-body").replaceChildren(
+    h("div", { class: "card-head" }, h("div", {}, h("h2", {}, "CPF"), h("p", { class: "muted small" }, "Not included in net worth. Update balances each month in + Add month."))),
+    tiles,
+    recs.length > 1 ? h("div", { class: "table-wrap loan-table" }, h("table", { class: "table" }, head, body)) : "",
+  );
+}
+
+/* Loans: tracked on their own (balance, interest, repayments), not subtracted from net worth. */
+function monthsUntil(dateStr) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  return (d.getFullYear() - now.getFullYear()) * 12 + d.getMonth() - now.getMonth();
+}
+
+function renderLoans() {
+  const loans = state.data.loans || [];
+  const card = $("#loan-card");
+  card.hidden = !loans.length;
+  if (!loans.length) return;
+  const months = state.data.months;
+  const blocks = loans.map((loan) => {
+    const recs = months.filter((m) => m.loans?.[loan.id]).map((m) => ({ month: m.month, ...m.loans[loan.id] }));
+    const last = [...recs].reverse().find((r) => r.balance != null);
+    const interest12 = sum(recs.slice(-12).map((r) => r.interest));
+    const lockIn = loan.lockInEnds ? monthsUntil(loan.lockInEnds) : null;
+    const tile = (label, value, sub, cls) => h("div", { class: `tile ${cls || ""}` }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
+    const lockLabel = loan.lockInEnds ? new Date(loan.lockInEnds).toLocaleDateString("en-SG", { day: "numeric", month: "short", year: "numeric" }) : null;
+    const tiles = h(
+      "div",
+      { class: "tiles" },
+      tile("Outstanding", last ? money(last.balance) : "–", last ? `as of ${monthLabel(last.month, true)}` : "Add it in + Add month"),
+      tile(
+        "Interest rate",
+        loan.rate != null ? `${loan.rate}%` : "–",
+        lockLabel ? (lockIn < 0 ? `Lock-in ended ${lockLabel}` : `Lock-in ends ${lockLabel} · ${lockIn <= 0 ? "this month" : `in ${lockIn} mo`}`) : null,
+        lockIn != null && lockIn >= 0 && lockIn <= 3 ? "warn" : "",
+      ),
+      tile("Monthly instalment", loan.instalment != null ? money(loan.instalment) : "–", [loan.paidFrom && `from ${loan.paidFrom}`, loan.dueDay && `due on the ${loan.dueDay}th`].filter(Boolean).join(" · ") || null),
+      tile("Interest paid", money(interest12), recs.length >= 12 ? "last 12 months" : `last ${recs.length} month${recs.length === 1 ? "" : "s"}`),
+    );
+    const head = h("thead", {}, h("tr", {}, h("th", {}, "Month"), ...["Balance", "Repaid", "Interest", "Principal paid"].map((t) => h("th", { class: "num" }, t))));
+    const body = h(
+      "tbody",
+      {},
+      [...recs].reverse().slice(0, 12).map((r) =>
+        h(
+          "tr",
+          {},
+          h("td", {}, monthLabel(r.month, true)),
+          h("td", { class: "num" }, r.balance != null ? money(r.balance) : "–"),
+          h("td", { class: "num" }, r.repaid != null ? money(r.repaid) : "–"),
+          h("td", { class: "num" }, r.interest != null ? money(r.interest) : "–"),
+          h("td", { class: "num" }, r.repaid != null && r.interest != null ? money(r.repaid - r.interest) : "–"),
+        ),
+      ),
+    );
+    return h(
+      "div",
+      { class: "loan-block" },
+      h("div", { class: "card-head" }, h("div", {}, h("h2", {}, loan.name || "Loan"), h("p", { class: "muted small" }, "Not subtracted from net worth. Update the balance each month in + Add month."))),
+      tiles,
+      recs.length ? h("div", { class: "table-wrap loan-table" }, h("table", { class: "table" }, head, body)) : null,
+    );
+  });
+  $("#loan-body").replaceChildren(...blocks);
+}
+
 function renderPassive(view) {
   const types = state.data.passiveTypes.filter((t) => view.some((s) => s.m.passive?.[t.id]));
   const total12 = sum(series().slice(-12).map((s) => s.passive));
@@ -902,6 +1006,42 @@ function buildMonthForm() {
       h("label", { class: "field" }, h("span", {}, t.name), h("input", { type: "text", inputmode: "decimal", name: `p_${t.id}`, value: money2(src?.passive?.[t.id]), placeholder: "0" })),
     ),
   );
+  const lastCpf = [...state.data.months].reverse().find((m) => m.month < key && m.cpf)?.cpf;
+  const curCpf = src ? src.cpf : lastCpf;
+  $("#mf-cpf").replaceChildren(
+    ...(state.data.months.some((m) => m.cpf)
+      ? [
+          h("h3", {}, "CPF balances"),
+          h(
+            "div",
+            { class: "field-grid" },
+            CPF_ACCOUNTS.map((a) =>
+              h("label", { class: "field" }, h("span", {}, a.name), h("input", { type: "text", inputmode: "decimal", name: `cpf_${a.id}`, value: money2(curCpf?.[a.id]), placeholder: lastCpf?.[a.id] != null ? `last ${money(lastCpf[a.id])}` : "0" })),
+            ),
+          ),
+        ]
+      : []),
+  );
+  $("#mf-loans").replaceChildren(
+    ...(state.data.loans || []).map((loan) => {
+      const cur = src?.loans?.[loan.id];
+      const prevBal = [...state.data.months].reverse().find((m) => m.month < key && m.loans?.[loan.id]?.balance != null)?.loans[loan.id].balance;
+      const field = (label, name, value, hint) =>
+        h("label", { class: "field" }, h("span", {}, label), h("input", { type: "text", inputmode: "decimal", name, value: money2(value), placeholder: hint || "0" }));
+      return h(
+        "div",
+        {},
+        h("h3", {}, loan.name || "Loan"),
+        h(
+          "div",
+          { class: "field-grid" },
+          field("Outstanding balance", `l_bal_${loan.id}`, cur?.balance, prevBal != null ? `last ${money(prevBal)}` : "from your bank app"),
+          field("Interest charged", `l_int_${loan.id}`, cur?.interest),
+          field(`Repaid${loan.paidFrom ? ` (${loan.paidFrom})` : ""}`, `l_rep_${loan.id}`, cur ? cur.repaid : loan.instalment),
+        ),
+      );
+    }),
+  );
   $("#mf-note").value = src?.note || "";
   updateMonthTotal();
 }
@@ -977,6 +1117,22 @@ async function saveMonthForm() {
     const v = parseAmount($(`#mf-passive input[name="p_${t.id}"]`).value);
     if (Number.isNaN(v)) bad = t.name;
     if (v) m.passive[t.id] = v;
+  }
+  if ($("#mf-cpf input")) {
+    const cpf = {};
+    for (const a of CPF_ACCOUNTS) {
+      const v = parseAmount($(`#mf-cpf input[name="cpf_${a.id}"]`).value);
+      if (Number.isNaN(v)) bad = `CPF ${a.name}`;
+      else if (v != null) cpf[a.id] = v;
+    }
+    if (Object.keys(cpf).length) m.cpf = cpf;
+  } else if (existing?.cpf) m.cpf = existing.cpf;
+  for (const loan of state.data.loans || []) {
+    const f = (k) => parseAmount($(`#mf-loans input[name="l_${k}_${loan.id}"]`)?.value);
+    const rec = { balance: f("bal"), interest: f("int"), repaid: f("rep") };
+    if (Object.values(rec).some((v) => Number.isNaN(v))) bad = loan.name || "Loan";
+    const clean = Object.fromEntries(Object.entries(rec).filter(([, v]) => v != null && !Number.isNaN(v)));
+    if (Object.keys(clean).length) (m.loans ||= {})[loan.id] = clean;
   }
   if (bad) return toast(`“${bad}” isn't a number`);
   // Estimated flags stay only on values the user didn't touch.
@@ -1194,7 +1350,7 @@ function openSettings() {
   $("#gh-token").value = c.token;
   $("#gh-test-msg").textContent = "";
   $("#settings-unlocked").hidden = !state.data;
-  if (state.data) renderAssetList();
+  if (state.data) renderAssetList(), renderLoanList();
   $$("#theme-seg button").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.themeOpt === store.get(K.theme, "system"))));
   $("#settings-dialog").showModal();
 }
@@ -1286,6 +1442,54 @@ function renderAssetList() {
         inUse(a.id)
           ? h("button", { class: "btn", type: "button", "aria-label": `Move ${a.name} down`, onclick: () => move(i, 1) }, "↓")
           : h("button", { class: "btn danger", type: "button", title: "Remove (never used)", onclick: () => (assets.splice(i, 1), changed()) }, "✕"),
+      ),
+    ),
+  );
+}
+
+function renderLoanList() {
+  const loans = (state.data.loans ||= []);
+  const changed = () => {
+    renderAll();
+    persist();
+  };
+  const num = (loan, key, label, width) =>
+    h("label", { class: "field" }, h("span", {}, label), h("input", {
+      type: "text",
+      inputmode: "decimal",
+      value: loan[key] ?? "",
+      style: width ? { width } : null,
+      onchange: (e) => {
+        const v = parseAmount(e.target.value);
+        if (Number.isNaN(v)) return toast("Not a number");
+        if (v == null) delete loan[key];
+        else loan[key] = v;
+        changed();
+      },
+    }));
+  $("#loan-list").replaceChildren(
+    ...loans.map((loan, i) =>
+      h(
+        "div",
+        { class: "loan-edit" },
+        h("div", { class: "field-grid" },
+          h("label", { class: "field" }, h("span", {}, "Name"), h("input", { value: loan.name || "", onchange: (e) => ((loan.name = e.target.value.trim() || "Loan"), changed()) })),
+          num(loan, "rate", "Interest rate %"),
+          num(loan, "instalment", "Monthly instalment"),
+          num(loan, "dueDay", "Due day of month"),
+          h("label", { class: "field" }, h("span", {}, "Lock-in ends"), h("input", { type: "date", value: loan.lockInEnds || "", onchange: (e) => ((loan.lockInEnds = e.target.value || undefined), changed()) })),
+          h("label", { class: "field" }, h("span", {}, "Paid from"), h("input", { value: loan.paidFrom || "", placeholder: "CPF / cash", onchange: (e) => ((loan.paidFrom = e.target.value.trim() || undefined), changed()) })),
+        ),
+        h("button", {
+          class: "btn ghost danger",
+          type: "button",
+          onclick: () => {
+            if (!confirm(`Remove ${loan.name || "this loan"}? Its monthly history stays in your data but won't be shown.`)) return;
+            loans.splice(i, 1);
+            renderLoanList();
+            changed();
+          },
+        }, "Remove loan"),
       ),
     ),
   );
@@ -1490,6 +1694,15 @@ function wireStatic() {
     }
   });
   $("#add-asset").addEventListener("click", addAsset);
+  $("#add-loan").addEventListener("click", () => {
+    const loans = (state.data.loans ||= []);
+    let id = "loan";
+    while (loans.some((l) => l.id === id)) id += "_2";
+    loans.push({ id, name: loans.length ? "Loan" : "Home loan" });
+    renderLoanList();
+    renderAll();
+    persist();
+  });
   $("#new-asset").addEventListener("keydown", (e) => e.key === "Enter" && (e.preventDefault(), addAsset()));
   $("#export-json").addEventListener("click", async () => download(`portfolio-${thisMonth()}.enc.json`, JSON.stringify(await encryptJSON(state.data, state.pass))));
   $("#export-plain").addEventListener("click", () => {
