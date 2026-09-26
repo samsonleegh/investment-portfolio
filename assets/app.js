@@ -1656,7 +1656,11 @@ function simulate(plan, returnPct) {
   const lb = latestBuyback(units[0]);
   // Already a former employee: the recorded price is the former-employee one, so no further discount.
   const leaver = !units[0]?.formerEmployee && plan.rsuLeaverPrice !== false && lb?.former && lb?.current ? lb.former / lb.current : 1;
-  let rsu = plan.includeRsu ? rsuNow * leaver : 0;
+  // Recorded value is after the asset's tax haircut; re-apply the plan's own RSU tax assumption instead.
+  const factor = units[0]?.factor ?? 1;
+  const rsuTax = (plan.rsuTaxPct ?? (1 - factor) * 100) / 100;
+  const rsuAfterTax = (rsuNow / factor) * (1 - rsuTax);
+  let rsu = plan.includeRsu ? rsuAfterTax * leaver : 0;
   const investable = (last ? total(last) : 0) - rsuNow - (plan.buffer || 0);
   const cpf = [...months].reverse().find((m) => m.cpf)?.cpf || {};
   const loan = (state.data.loans || [])[0];
@@ -1689,8 +1693,8 @@ function simulate(plan, returnPct) {
     if (rsu < 0 && depletedAt == null) depletedAt = y + 1;
     rows.push({ y, real: Math.max(bal + Math.max(rsu, 0), 0) / (1 + inf) ** (y + 1), need, cashMortgage });
   }
-  const start = investable + (plan.includeRsu ? rsuNow * leaver : 0);
-  return { investable: start, rsuStart: plan.includeRsu ? rsuNow * leaver : 0, leaver, spendMo, instalment, share, rows, depletedAt, oaOutYear, loanOffYear, years, oaStart: cpf.oa || 0 };
+  const start = investable + (plan.includeRsu ? rsuAfterTax * leaver : 0);
+  return { investable: start, rsuStart: plan.includeRsu ? rsuAfterTax * leaver : 0, rsuTax, leaver, spendMo, instalment, share, rows, depletedAt, oaOutYear, loanOffYear, years, oaStart: cpf.oa || 0 };
 }
 
 function rsuNote(plan) {
@@ -1706,7 +1710,8 @@ function rsuNote(plan) {
       "li",
       {},
       `${a.name}: as a former employee you get the former-employee buyback price, which rose from US$${first.former} (${monthLabel(first.when)}) to US$${last.former} (${monthLabel(last.when)}), about ${pct(cagr, 0)} a year. ` +
-        `The plan assumes ${plan.rsuGrowthPct}%/yr from here; past buyback growth isn't guaranteed.`,
+        `The plan assumes ${plan.rsuGrowthPct}%/yr from here; past buyback growth isn't guaranteed. ` +
+        `Tax: Singapore has no capital gains tax, but RSUs are usually taxed as employment income, so whether your 15% applies depends on how and when yours were taxed. If it's taxed as income in a year without salary, progressive rates are much lower (0% on the first S$20K). Check with IRAS or a tax adviser, and set "Tax on RSU when sold" to compare.`,
     );
   return h(
     "li",
@@ -1738,7 +1743,7 @@ function renderRetire({ table = true } = {}) {
   const rateCls = (x) => (x <= 0.04 ? "" : "warn");
   $("#rt-tiles").replaceChildren(
     tile("Semi-retired spending", `${money(base.spendMo)}/mo`, `vs ${money(nowMo)}/mo now`),
-    tile("Invested money to draw on", money(base.investable), `after a ${money(plan.buffer || 0)} cash buffer${plan.includeRsu ? ` · RSU ${money(base.rsuStart)}${base.leaver < 1 ? " at leaver price" : ""}` : " · excl. RSU"}`),
+    tile("Invested money to draw on", money(base.investable), `after a ${money(plan.buffer || 0)} cash buffer${plan.includeRsu ? ` · RSU ${money(base.rsuStart)} after ${pct(base.rsuTax, 0)} tax${base.leaver < 1 ? ", leaver price" : ""}` : " · excl. RSU"}`),
     tile("Draw while CPF OA pays the loan", pct(rate(Math.max(0, yr1))), `${money(Math.max(0, yr1))}/yr · 4% is a common rule of thumb`, rateCls(rate(yr1))),
     afterOa != null ? tile("Draw once the loan moves to cash", pct(rate(afterOa)), `${money(afterOa)}/yr from year ${base.oaOutYear + 1}`, rateCls(rate(afterOa))) : "",
     tile(`At ${plan.returnPct}% return`, lastsText(base), `At ${plan.returnPct - 2}%: ${lastsText(low).toLowerCase()}`, base.depletedAt ? "warn" : ""),
@@ -1813,6 +1818,7 @@ function renderRetire({ table = true } = {}) {
     field("CPF payout from 65 (S$/mo)", "cpfPayout", { hint: "check CPF LIFE estimator" }),
     field("Years to plan for (if no age)", "horizon", { int: true }),
     field("RSU growth (%/yr)", "rsuGrowthPct"),
+    field("Tax on RSU when sold (%)", "rsuTaxPct", { hint: "15" }),
     h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.includeRsu, onchange: (e) => ((plan.includeRsu = e.target.checked), renderRetire({ table: false }), save()) }), "Count TikTok RSU as investable"),
     state.data.assets.some((a) => a.valuation === "units" && a.buybacks?.length && !a.formerEmployee)
       ? h("label", { class: "check" }, h("input", { type: "checkbox", checked: plan.rsuLeaverPrice !== false, onchange: (e) => ((plan.rsuLeaverPrice = e.target.checked), renderRetire({ table: false }), save()) }), "Value RSU at former-employee buyback price")
