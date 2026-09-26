@@ -163,12 +163,12 @@ def fill_gaps(months, asset_ids, max_gap=3):
                 months[i].setdefault("estimated", []).append(aid)
 
 
-def build_budget(ws):
-    """The plan in 'Money Transfer' column C (rows 2-26)."""
-    salary = num(ws["C2"].value) or 0
-    take_home = num(ws["C3"].value) or 0
+def build_budget(ws, col="E"):
+    """The current plan in 'Money Transfer' column E (rows 2-27); column C is an older one."""
+    salary = num(ws[f"{col}2"].value) or 0
+    take_home = num(ws[f"{col}3"].value) or 0
     lines = lambda rows: [
-        {"name": text(ws[f"B{r}"].value), "amount": round(num(ws[f"C{r}"].value) or 0, 2)}
+        {"name": text(ws[f"B{r}"].value), "amount": round(num(ws[f"{col}{r}"].value) or 0, 2)}
         for r in rows
         if ws[f"B{r}"].value
     ]
@@ -177,7 +177,7 @@ def build_budget(ws):
         "income": [{"name": "Salary", "amount": salary}],
         "deductions": [{"name": "CPF (employee) + CDAC", "amount": round(salary - take_home, 2)}],
         "expenses": lines(range(4, 15)),
-        "investments": lines(range(15, 27)),
+        "investments": lines(range(15, 28)),
     }
 
 

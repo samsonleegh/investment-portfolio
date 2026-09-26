@@ -263,6 +263,12 @@ function mergeAdditions(local, remote) {
     if (!la) continue;
     for (const [k, v] of Object.entries(ra)) if (la[k] === undefined) la[k] = v;
   }
+  // Cash-flow plans: add missing months; replace a plan the file has updated more recently.
+  for (const rb of remote.budgets || []) {
+    const i = (local.budgets ||= []).findIndex((b) => b.month === rb.month);
+    if (i < 0) local.budgets.push(rb);
+    else if ((rb.updatedAt || "") > (local.budgets[i].updatedAt || "")) local.budgets[i] = rb;
+  }
   const byMonth = Object.fromEntries(local.months.map((m) => [m.month, m]));
   const latest = local.months.reduce((mx, m) => (m.month > mx ? m.month : mx), "");
   for (const rm of remote.months || []) {
@@ -1106,6 +1112,7 @@ function renderCashflow({ editor = true } = {}) {
 
 function renderCfEditor(b) {
   const onChange = () => {
+    b.updatedAt = new Date().toISOString();
     renderCashflow({ editor: false });
     clearTimeout(renderCfEditor._t);
     renderCfEditor._t = setTimeout(() => persist(), 700);
@@ -1154,7 +1161,7 @@ async function newBudgetMonth() {
   const bs = state.data.budgets;
   const last = bs.at(-1);
   const month = last ? addMonths(last.month, 1) : thisMonth();
-  const copy = last ? JSON.parse(JSON.stringify({ ...last, month })) : { month, income: [{ name: "Salary", amount: 0 }], deductions: [{ name: "CPF (employee)", amount: 0 }], expenses: [], investments: [] };
+  const copy = last ? JSON.parse(JSON.stringify({ ...last, month, updatedAt: new Date().toISOString() })) : { month, income: [{ name: "Salary", amount: 0 }], deductions: [{ name: "CPF (employee)", amount: 0 }], expenses: [], investments: [] };
   bs.push(copy);
   state.ui.cfMonth = month;
   renderCashflow();
