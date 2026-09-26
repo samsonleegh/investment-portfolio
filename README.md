@@ -62,7 +62,7 @@ The sheet tracked the whole IBKR account as one "IWDA" number. `scripts/split_ib
 
 - **Jun 2025 onward:** each fund's month-end quantity is rebuilt by rewinding IBKR trades from current positions, then valued at IBKR month-end prices. The totals match IBKR's own ETF totals to within 0.1%.
 - **Before Jun 2025:** one "IBKR (all funds)" line. IBKR's trade history doesn't go back further.
-- **Cost:** IBKR's "invested" is your sheet's contribution total, split across funds in proportion to IBKR's cost per fund. Your contributions come to about S$1.02 per US$1 of IBKR cost, mainly because gains were rolled over when you switched funds. So per-fund gains here are about 24% higher than IBKR's own figures, but still comparable between funds.
+- **Cost:** IBKR's "invested" is your sheet's contribution total (S$128K by Aug 2026). IWDA was transferred in from Standard Chartered, so IBKR records its cost as the value on the transfer date, not what you paid. Funds bought inside IBKR get their real SGD cost (trade amount × USD/SGD that month), and IWDA gets the rest of the total. IWDA's gain therefore also includes the gains from IWDA shares sold in 2025 to buy SLV, GLD and QQQM.
 
 Funds sharing an **account** (⚙ Settings → Assets) show as one band in the trend chart and are grouped in the holdings table.
 

@@ -4,10 +4,11 @@ The sheet tracked the whole IBKR account as one number ("IWDA"). This rebuilds
 each fund's month-end quantity by rewinding IBKR trades from today's positions,
 values it with IBKR month-end prices, and scales to IBKR's own ETF total.
 
-Cost follows the sheet: the IBKR account's "invested" stays exactly the sheet's
-contribution total, split across funds in proportion to IBKR's cost basis. So
-per-fund gains are comparable with each other, but scaled to your contributions
-rather than IBKR's (which also counts gains you rolled over when switching funds).
+Cost: the IBKR account's "invested" stays exactly the sheet's contribution total.
+IWDA was transferred in from Standard Chartered, so IBKR's cost for it is the
+transfer-date value, not what was paid. Funds bought inside IBKR therefore get
+their real SGD cost (IBKR trade amounts x USD/SGD that month; a sale removes the
+sold fraction of cost), and IWDA gets the remainder of the sheet total.
 
 Months before the trade history starts stay as one "IBKR (all funds)" line.
 
@@ -82,6 +83,21 @@ def main():
     others = [a for aid, a in old.items() if aid != "iwda"]
     data["assets"] = ibkr_assets + others
 
+    # Cost basis in SGD for funds bought inside IBKR, walked forward from the first split month.
+    # Lots already held then (other than IWDA) are converted at the average rate of the
+    # preceding months, when they would have been bought.
+    first_end = month_end(first)
+    pre_rates = [r for mo, r in zip(mk["months"], mk["close"]["USDSGD"]) if mo <= first]
+    r0 = sum(pre_rates) / len(pre_rates)
+    run_q = qty_at(first)
+    cost_sgd = {s: now[s]["qty"] * now[s]["avg"] for s in now}
+    for t in trades:
+        if t["date"] > first_end:
+            net, com, pnl = (float(t[k]) for k in ("net", "commission", "realized_pnl"))
+            cost_sgd[t["symbol"]] += -(net + com) if t["side"] == "BUY" else net - com - pnl
+    cost_sgd = {s: c * r0 if run_q[s] > 1e-6 else 0.0 for s, c in cost_sgd.items()}
+    pending = sorted((t for t in trades if t["date"] > first_end), key=lambda t: t["date"])
+
     months = {m["month"]: m for m in data["months"]}
     for m in sorted(months):
         rec = months[m]
@@ -108,18 +124,20 @@ def main():
             rec["values"][FUNDS[s][0]] = round(v * scale, 2)
         rec["values"]["ibkr_cash"] = round(cash, 2)
 
-        # Cost: the sheet's IBKR contributions (lump_c) minus cash, split across funds
-        # in proportion to IBKR's own cost basis for each fund at that month-end.
-        pool = (lump_c or 0) - cash
+        # Cost: apply this month's trades, then IWDA takes what's left of the sheet total.
         end = month_end(m)
-        cost = {s: now[s]["qty"] * now[s]["avg"] for s in now}
-        for t in trades:
-            if t["date"] <= end:
-                continue
-            net, com, pnl = (float(t[k]) for k in ("net", "commission", "realized_pnl"))
-            cost[t["symbol"]] += -(net + com) if t["side"] == "BUY" else net - com - pnl
-        w = {s: to_sgd(m, s, cost[s]) for s in raw}
-        inv = {s: pool * w[s] / sum(w.values()) for s in raw}
+        while pending and pending[0]["date"] <= end:
+            t = pending.pop(0)
+            sym, n = t["symbol"], float(t["size"])
+            if t["side"] == "BUY":
+                cost_sgd[sym] += to_sgd(t["date"][:7], sym, float(t["net"]) + float(t["commission"]))
+                run_q[sym] += n
+            else:
+                cost_sgd[sym] *= max(run_q[sym] - n, 0) / run_q[sym]
+                run_q[sym] -= n
+        pool = (lump_c or 0) - cash
+        inv = {s: cost_sgd[s] for s in raw if s != "IWDA"}
+        inv["IWDA"] = pool - sum(inv.values())
         for s, v in inv.items():
             if s in raw:
                 rec["invested"][FUNDS[s][0]] = round(v, 2)
