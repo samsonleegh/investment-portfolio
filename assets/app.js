@@ -193,7 +193,7 @@ async function boot() {
   const hasEncrypted = (state.remote && isEncrypted(state.remote.payload)) || cache?.payload;
 
   if (!state.remote && !cache) return showLock("create", "No data found yet. Choose a passphrase to start fresh, or import a file.");
-  if (!hasEncrypted) return showLock("create", "Your data isn't encrypted yet. Choose a passphrase — it protects the file you commit to GitHub.");
+  if (!hasEncrypted) return showLock("create", "Choose a passphrase for this device. It locks the copy saved in this browser, and the GitHub copy too if you turn on sync.");
 
   const saved = store.get(K.pass, null, sessionStorage) || store.get(K.pass);
   if (saved) {
