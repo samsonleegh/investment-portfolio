@@ -919,19 +919,27 @@ function updateMonthTotal() {
     if (Number.isNaN(v)) bad = true;
     else t += v || 0;
   });
-  // Per account: money added = funds bought + change in the account's cash (no-cost holdings).
-  $$("#mf-assets tr.group-row").forEach((row) => {
+  // Money added = every holding's "added" + change in account cash (no-cost holdings inside
+  // an account, e.g. IBKR cash). Standalone cash and RSUs aren't counted: their changes
+  // are spending/saving or price moves, not investing.
+  const addedFor = (assets) => {
     let add = 0;
-    for (const a of state.data.assets.filter((x) => x.group === row.dataset.group)) {
+    for (const a of assets) {
       const ci = $(`#mf-assets input[name="c_${a.id}"]`);
       const vi = $(`#mf-assets input[name="v_${a.id}"]`);
       if (ci) add += parseAmount(ci.value) || 0;
-      else if (vi && !a.costTracked) add += (parseAmount(vi.value) || 0) - (prev?.values[a.id] ?? 0);
+      else if (vi && !a.costTracked && a.group) add += (parseAmount(vi.value) || 0) - (prev?.values[a.id] ?? 0);
     }
-    row.querySelector(".grp-added").textContent = `Added this month ${signed(add)}`;
+    return add;
+  };
+  $$("#mf-assets tr.group-row").forEach((row) => {
+    row.querySelector(".grp-added").textContent = `Added this month ${signed(addedFor(state.data.assets.filter((x) => x.group === row.dataset.group)))}`;
   });
+  const addedAll = addedFor(state.data.assets);
+  $("#mf-summary").textContent = `Added ${signed(addedAll)} · Total ${money(t)}`;
   const pt = prev ? total(prev) : null;
   $("#mf-total").replaceChildren(
+    h("span", {}, "Added this month ", h("b", {}, signed(addedAll))),
     h("span", {}, "Total ", h("b", {}, money(t))),
     pt != null ? h("span", { class: t - pt >= 0 ? "up" : "down" }, `${signed(t - pt)} vs ${monthLabel(prev.month)}`) : "",
     bad ? h("span", { class: "error" }, "Check the highlighted numbers") : "",
