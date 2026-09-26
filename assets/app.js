@@ -573,9 +573,9 @@ function renderPortfolio() {
   const tile = (label, value, sub, cls) => h("div", { class: `tile ${cls || ""}` }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), sub ? h("div", { class: "sub" }, sub) : null);
   const rangeName = state.ui.range ? `last ${state.ui.range / 12 === 1 ? "12 months" : state.ui.range / 12 + " years"}` : "all time";
   $("#tiles").replaceChildren(
-    tile("Invested (cost)", money(invested), `${tracked.length} holdings with a cost basis`),
-    tile("Unrealised gain", h("span", { class: trackedValue - invested >= 0 ? "up" : "down" }, signed(trackedValue - invested)), `${signedPct((trackedValue - invested) / invested)} on cost`),
-    tile("Market gain", h("span", { class: rangeGain >= 0 ? "up" : "down" }, signed(rangeGain)), `${rangeName} · plus ${money(rangeNew)} new money`),
+    tile("Invested", money(invested), `Money you've put into ${tracked.length} holdings (excl. cash & RSU)`),
+    tile("Total gain · all time", h("span", { class: trackedValue - invested >= 0 ? "up" : "down" }, signed(trackedValue - invested)), `${signedPct((trackedValue - invested) / invested)} on what you invested · now worth ${money(trackedValue)}`),
+    tile(`Market gain · ${rangeName}`, h("span", { class: rangeGain >= 0 ? "up" : "down" }, signed(rangeGain)), `Growth from markets in this period. You also added ${money(rangeNew)}.`),
     tile("Passive income", money(passive12), `last 12 months · ${money(passive12 / 12)}/mo`),
   );
 
