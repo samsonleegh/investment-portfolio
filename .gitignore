@@ -10,3 +10,4 @@ portfolio-*.json
 .DS_Store
 __pycache__/
 data/ibkr/
+*.pdf
